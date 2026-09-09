@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wahid &amp; Délia</title>
+<meta name="description" content="Wahid & Délia ont la joie de vous inviter à célébrer leurs fiançailles — samedi 12 septembre 2026, Sunset Beach.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   « Écume & lin » — version définitive (après jury)
+   Palette (8) :
+     lin        #F8F9F6  page, un blanc tirant très légèrement vers le verre de mer
+     écume      #EEF2EE  filets de la table des marées
+     sable      #E9E1CF  bande de sol, en bas — le rivage
+     horizon    #CDBFA1  l'unique filet chaud : la ligne d'horizon, le souligné
+                         du lien, le tiret de la danse
+     verre      #6F8580  réservé à l'esperluette et au trait de la fleur
+     encre-2    #4E6062  tout le second niveau de texte (≥ 4,5:1 sur lin et sable)
+     encre      #1B2726  texte, bleu-vert presque noir (jamais du noir pur)
+     or         #D9A64A  le soleil qui se couche sur l'horizon — dépensé deux fois
+     or-encre   #866420  … et l'heure de 19h00, « au coucher du soleil »
+   Typo : Italiana (titrage — haute contraste, une seule graisse, silhouette de
+   masthead) + Cormorant Garamond (texte, italiques pour l'invitation ; chiffres
+   alignés et tabulaires sur les heures).
+   Mise en page : un bloc unique, calé à gauche. Grand écran : grille 7/5 ; les
+   noms et l'invitation à gauche, la gardénia blanche à droite qui déborde du
+   bord ; une ligne d'horizon d'un pixel traverse la page avec un soleil à demi
+   couché ; sous elle, le rendez-vous à gauche et le programme à droite, lu
+   comme une table des marées. Mobile : une colonne, la fleur en tête décalée
+   d'un quart hors cadre, puis noms, invitation, horizon, rendez-vous, programme,
+   et le sable qui ferme la page.
+   Le risque : presque aucune couleur. Blanc sur blanc, un filet chaud, une
+   fleur blanche remplie posée sur la page, et un seul point d'or.
+   ============================================================ */
+:root{
+  --lin:#F8F9F6; --ecume:#EEF2EE; --sable:#E9E1CF; --horizon:#CDBFA1;
+  --verre:#6F8580; --encre-2:#4E6062; --encre:#1B2726;
+  --or:#D9A64A; --or-encre:#866420;
+  --display:"Italiana","Bodoni Moda","Didot","Bodoni 72","Times New Roman",serif;
+  --body:"Cormorant Garamond","Cormorant","EB Garamond","Garamond","Georgia","Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{background:var(--lin);-webkit-text-size-adjust:100%; overflow-x:hidden; overflow-x:clip}
+body{
+  margin:0; background:var(--lin); color:var(--encre);
+  font-family:var(--body); font-size:20px; line-height:1.4;
+  font-feature-settings:"kern","liga";
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overflow-x:hidden; overflow-x:clip;
+}
+main{overflow-x:hidden; overflow-x:clip}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--encre); outline-offset:4px}
+
+/* ---- grille ---- */
+.page{
+  max-width:1160px; margin:0 auto;
+  padding:clamp(24px,5vw,64px) clamp(24px,6vw,72px) 0;
+}
+.grid{display:grid; grid-template-columns:minmax(0,1fr); row-gap:0}
+.col{min-width:0}
+.fleur{
+  display:block; width:clamp(168px,46vw,220px); aspect-ratio:1/1;
+  margin:-8px calc(-.24 * clamp(168px,46vw,220px)) 2px auto;   /* un quart de la fleur hors cadre */
+  justify-self:end;
+}
+
+/* ---- étiquettes ---- */
+.label{
+  font-family:var(--body); font-weight:500; font-size:12px; line-height:1;
+  letter-spacing:.34em; text-transform:uppercase; color:var(--encre-2);
+  margin:0 0 18px;
+}
+.label::before{
+  content:""; display:inline-block; width:26px; height:1px;
+  background:var(--encre-2); vertical-align:middle; margin-right:14px; margin-top:-2px;
+}
+
+/* ---- masthead ---- */
+.masthead{margin-top:6px}
+.names{
+  font-family:var(--display); font-weight:400; margin:0;
+  font-size:clamp(78px,24.5vw,204px); line-height:.9; letter-spacing:-.005em;
+  display:grid; row-gap:0;
+}
+.names .w{display:block}
+.names .d{display:block; padding-left:.22em; white-space:nowrap; word-spacing:-.21em}  /* l'espace réel (copie/lecteur d'écran) resserré à la valeur du filet visuel */
+.names .amp{
+  font-family:var(--body); font-style:italic; font-weight:400;
+  font-size:.62em; line-height:1; color:var(--verre);
+  position:relative; top:-.08em;
+}
+.invite{
+  font-style:italic; font-weight:400;
+  font-size:clamp(25px,6.4vw,38px); line-height:1.18;
+  max-width:16em; margin:26px 0 0;
+}
+
+/* ---- l'horizon : un filet, un soleil à demi couché ---- */
+.horizon{
+  position:relative; height:1px; background:var(--horizon);
+  margin:clamp(36px,8vw,72px) 0 0;
+}
+.horizon .soleil{
+  position:absolute; bottom:0; right:9%;
+  width:30px; height:15px; border-radius:15px 15px 0 0;
+  background:var(--or);
+}
+
+/* ---- rendez-vous ---- */
+.when{margin-top:clamp(32px,7vw,64px)}
+.date{
+  font-family:var(--display); font-weight:400; margin:0;
+  font-size:clamp(34px,8.6vw,58px); line-height:1.02; letter-spacing:.005em;
+}
+.lieu{margin:14px 0 0; font-size:clamp(21px,5.4vw,25px); line-height:1.3}
+.lieu i{font-style:italic; color:var(--encre-2)}
+.lieu .sep{color:var(--horizon)}
+.des{margin:6px 0 0; font-size:20px; color:var(--encre-2); font-variant-numeric:lining-nums tabular-nums}
+.agenda{
+  display:inline-block; margin-top:8px; padding:15px 0; line-height:1;
+  font-size:15px; letter-spacing:.12em; text-transform:uppercase; color:var(--encre-2);
+  text-decoration:underline; text-decoration-color:var(--horizon);
+  text-decoration-thickness:1px; text-underline-offset:6px;
+}
+.agenda:hover{color:var(--encre); text-decoration-color:var(--encre)}
+
+/* ---- table des marées ---- */
+.tide{margin-top:clamp(48px,9vw,64px)}
+.tide .label{margin-bottom:20px}
+.maree{
+  list-style:none; margin:0; padding:0 0 0 22px;
+  border-left:1px solid var(--encre-2); position:relative;
+}
+.maree li{
+  display:grid; grid-template-columns:max-content minmax(0,1fr); column-gap:16px; align-items:baseline;
+  padding:13px 0; position:relative;
+}
+.maree li::before{                    /* repère de marée sur le filet */
+  content:""; position:absolute; left:-22px; top:calc(50% + 1px); width:10px; height:1px;
+  background:var(--encre-2);
+}
+.maree li+li{border-top:1px solid var(--ecume)}
+.maree .t{
+  font-variant-numeric:lining-nums tabular-nums; letter-spacing:0; font-weight:500;
+  color:var(--encre-2); font-size:17px; white-space:nowrap; min-width:5ch;
+}
+.maree .m{font-size:clamp(20px,5.2vw,23px); line-height:1.3; min-width:0; overflow-wrap:anywhere}
+.maree .m small{display:block; font-size:16px; color:var(--encre-2); letter-spacing:.02em; margin-top:1px}
+.maree .couchant .t{color:var(--or-encre)}
+.maree .danse .m{font-style:italic}
+.maree .danse .clin{font-style:normal; font-size:.85em; line-height:1; margin-left:.35em}
+.maree .danse .t{color:var(--horizon)}
+.maree .danse::before{width:0}
+
+/* ---- sol de sable : le rivage ---- */
+.sol{
+  margin-top:clamp(64px,11vw,112px);
+  background:var(--sable);
+}
+.sol .in{
+  max-width:1160px; margin:0 auto; padding:26px clamp(24px,6vw,72px) 34px;
+  display:flex; flex-wrap:wrap; gap:10px 40px; align-items:baseline; justify-content:space-between;
+  font-size:16px; color:var(--encre-2);
+}
+.sol p{margin:0}
+.sol .theme b{font-weight:500; color:var(--encre)}
+.sol .sign{font-family:var(--display); font-size:20px; color:var(--encre); letter-spacing:.02em}
+
+/* ---- grand écran ---- */
+@media (min-width:940px){
+  .grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr); column-gap:48px; align-items:start}
+  .masthead{grid-column:1; grid-row:1; margin-top:36px}
+  .fleur{grid-column:2; grid-row:1; width:min(100%,460px); margin:0 -12% 0 auto; align-self:start}
+  .horizon{grid-column:1 / -1; grid-row:2; margin-top:clamp(40px,5vw,64px)}
+  .horizon .soleil{right:17%; width:36px; height:18px; border-radius:18px 18px 0 0}
+  .when{grid-column:1; grid-row:3; margin-top:clamp(56px,6vw,80px)}
+  .tide{grid-column:2; grid-row:3; margin-top:clamp(56px,6vw,80px)}
+  .tide .label{margin-bottom:26px}
+  .tide .maree{max-width:520px}
+  .names{font-size:clamp(150px,15.5vw,188px)}
+  .names .d{padding-left:.36em}
+  .invite{margin-top:38px}
+  .sol .in{padding-top:32px; padding-bottom:44px}
+}
+/* téléphones courts (≤ 700 px de haut) : noms, date et lieu tiennent dans le premier écran */
+@media (max-width:939px) and (max-height:700px){
+  .fleur{width:clamp(140px,36vw,168px); margin-top:-14px}
+  .invite{margin-top:20px}
+  .horizon{margin-top:28px}
+  .when{margin-top:26px}
+}
+@media (max-width:939px) and (max-height:600px){
+  .fleur{width:120px; margin-top:-18px}
+  .invite{margin-top:14px}
+  .horizon{margin-top:22px}
+  .when{margin-top:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .fleur{transition:none}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="page">
+    <div class="grid">
+      <canvas class="fleur" id="fleur" aria-hidden="true" width="260" height="260"></canvas>
+
+      <header class="col masthead">
+        <p class="label">Fiançailles</p>
+        <h1 class="names" aria-label="Wahid et Délia">
+          <span class="w">Wahid</span>
+          <span class="d"><span class="amp">&amp;</span> Délia</span>
+        </h1>
+        <p class="invite">ont la joie de vous inviter à&nbsp;célébrer leurs&nbsp;fiançailles</p>
+      </header>
+
+      <div class="horizon" role="presentation"><span class="soleil"></span></div>
+
+      <section class="col when" aria-labelledby="rv">
+        <h2 class="label" id="rv">Rendez-vous</h2>
+        <p class="date">Samedi 12&nbsp;septembre&nbsp;2026</p>
+        <p class="lieu">Sunset Beach&nbsp;<span class="sep">—</span> <i>plage privée</i></p>
+        <p class="des">dès 15h00</p>
+        <a class="agenda" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener">Ajouter à mon agenda</a>
+      </section>
+
+      <section class="col tide" aria-labelledby="prog">
+        <h2 class="label" id="prog">Programme</h2>
+        <ol class="maree">
+          <li><span class="t">15h00</span><span class="m">Accueil des invités<small>l’arrivée</small></span></li>
+          <li><span class="t">15h30</span><span class="m">Pause gourmande</span></li>
+          <li><span class="t">17h00</span><span class="m">Café &amp; mignardises<small>l’heure du café</small></span></li>
+          <li class="couchant"><span class="t">19h00</span><span class="m">Pièce montée au coucher du soleil</span></li>
+          <li class="danse"><span class="t">—</span><span class="m">La danse&#8239;? À toute heure&nbsp;<span class="clin">😉</span></span></li>
+        </ol>
+      </section>
+    </div>
+  </div>
+
+  <footer class="sol">
+    <div class="in">
+      <p class="theme">Thème&nbsp;: <b>plage &amp; fleurs blanches</b></p>
+      <p class="sign">Wahid &amp; Délia</p>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var c=document.getElementById('fleur'); if(!c||!c.getContext) return;
+  var ctx=c.getContext('2d');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var gen=0, raf=0;   /* jeton de génération : un redessin annule l'animation en cours */
+  var VERRE='rgba(111,133,128,', BLANC='rgba(255,255,255,';
+
+  function draw(){
+    gen++; var my=gen; if(raf) cancelAnimationFrame(raf);
+    var size=c.clientWidth||260, dpr=Math.min(window.devicePixelRatio||1,3);
+    c.width=Math.round(size*dpr); c.height=Math.round(size*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,size,size);
+    ctx.lineJoin='round'; ctx.lineCap='round';
+
+    var s=11; function rnd(){ s=(s*9301+49297)%233280; return s/233280; }
+    var ops=[];
+    /* une forme blanche remplie puis cernée : le remplissage cache ce qui est dessous,
+       d'où de vrais recouvrements entre pétales */
+    function shape(alpha,w,fill,fn){ ops.push(function(){ ctx.save(); ctx.beginPath(); fn();
+      if(fill){ ctx.fillStyle=BLANC+fill+')'; ctx.fill(); }
+      ctx.strokeStyle=VERRE+alpha+')'; ctx.lineWidth=w; ctx.stroke(); ctx.restore(); }); }
+    function line(alpha,w,fn){ shape(alpha,w,0,fn); }
+
+    /* pétale de gardénia : bout arrondi, flancs bombés, un bord replié sur demande */
+    function petal(cx,cy,len,wid,a,curl){
+      shape(.72,1,.94,function(){
+        ctx.translate(cx,cy); ctx.rotate(a);
+        ctx.moveTo(0,0);
+        ctx.bezierCurveTo(wid*.9,len*.18, wid*1.15,len*.72, wid*.34,len*.97);
+        ctx.bezierCurveTo(wid*.14,len*1.05, -wid*.14,len*1.05, -wid*.34,len*.97);
+        ctx.bezierCurveTo(-wid*1.15,len*.72, -wid*.9,len*.18, 0,0);
+      });
+      /* la creuse du pétale : une courbe légère près du bout */
+      line(.22,.8,function(){
+        ctx.translate(cx,cy); ctx.rotate(a);
+        ctx.moveTo(-wid*.42,len*.66); ctx.quadraticCurveTo(0,len*.86, wid*.42,len*.66);
+      });
+      if(curl){ /* bord replié : une petite langue blanche rabattue sur le bout */
+        shape(.6,1,.96,function(){
+          ctx.translate(cx,cy); ctx.rotate(a);
+          ctx.moveTo(wid*.36,len*.62);
+          ctx.bezierCurveTo(wid*.9,len*.8, wid*.5,len*1.08, -wid*.05,len*.9);
+          ctx.quadraticCurveTo(wid*.3,len*.8, wid*.36,len*.62);
+        });
+      }
+    }
+
+    var cx=size*.56, cy=size*.43, R=size*.33, i,a;
+
+    /* tige, rameau des boutons, feuilles — dessinés d'abord, la fleur les recouvre */
+    var sx=cx-R*.12, sy=cy+R*.5;
+    var n1x=sx-size*.05, n1y=size*.80;                  /* premier nœud : feuille + rameau */
+    var n2x=sx-size*.02, n2y=size*.93;                  /* second nœud : la tige s'arrête sur la feuille */
+    line(.6,1.1,function(){ ctx.moveTo(sx,sy); ctx.quadraticCurveTo(sx-size*.07,size*.70, n1x,n1y); ctx.quadraticCurveTo(n1x+size*.01,size*.87, n2x,n2y); });
+    /* rameau vers les boutons de jasmin, en haut à gauche, passant derrière la fleur */
+    line(.5,1,function(){ ctx.moveTo(n1x,n1y); ctx.quadraticCurveTo(size*.14,size*.66, size*.17,size*.30); });
+    line(.5,1,function(){ ctx.moveTo(size*.185,size*.42); ctx.quadraticCurveTo(size*.11,size*.36, size*.10,size*.24); });
+    function leaf(lx,ly,len,wid,a){
+      shape(.6,1,.7,function(){ ctx.translate(lx,ly); ctx.rotate(a); ctx.moveTo(0,0);
+        ctx.bezierCurveTo(wid,len*.15, wid*1.1,len*.7, 0,len); ctx.bezierCurveTo(-wid*.5,len*.7, -wid*.4,len*.25, 0,0); });
+      line(.35,.8,function(){ ctx.translate(lx,ly); ctx.rotate(a); ctx.moveTo(0,len*.06); ctx.quadraticCurveTo(wid*.12,len*.5, 0,len*.92); });
+    }
+    leaf(n1x,n1y,size*.27,size*.075,Math.PI*.62);       /* vers la gauche, en bas */
+    leaf(n2x,n2y,size*.22,size*.065,-Math.PI*.62);      /* vers la droite, ferme la tige */
+    /* boutons de jasmin : goutte blanche, calice en deux traits, sur le rameau */
+    function bud(bx,by,l,w,a){
+      shape(.55,1,.94,function(){ ctx.translate(bx,by); ctx.rotate(a); ctx.moveTo(0,0); ctx.bezierCurveTo(w,l*.25, w*.75,l*.8, 0,l); ctx.bezierCurveTo(-w*.75,l*.8, -w,l*.25, 0,0); });
+      line(.5,.9,function(){ ctx.translate(bx,by); ctx.rotate(a); ctx.moveTo(-w*.55,l*.22); ctx.lineTo(0,0); ctx.lineTo(w*.55,l*.22); });
+    }
+    bud(size*.17,size*.30,size*.10,size*.032,Math.PI+.35);
+    bud(size*.10,size*.24,size*.085,size*.028,Math.PI+.75);
+
+    /* gardénia : trois couronnes de pétales arrondis, longueurs variées, une couronne
+       intérieure resserrée ; chaque couronne recouvre la précédente */
+    var curlAt=2;
+    for(i=0;i<8;i++){ a=i*Math.PI*2/8+(rnd()-.5)*.22; petal(cx,cy,R*(.86+rnd()*.26),R*(.36+rnd()*.06),a,i===curlAt); }
+    for(i=0;i<6;i++){ a=i*Math.PI*2/6+Math.PI/6+(rnd()-.5)*.2; petal(cx,cy,R*(.62+rnd()*.1),R*.31,a,false); }
+    for(i=0;i<5;i++){ a=i*Math.PI*2/5+.5+(rnd()-.5)*.25; petal(cx,cy,R*(.38+rnd()*.06),R*.22,a,false); }
+    /* cœur : trois pétales à peine ouverts, roulés ensemble */
+    for(i=0;i<3;i++){ a=i*Math.PI*2/3+1.1; petal(cx+Math.cos(a)*R*.03,cy+Math.sin(a)*R*.03,R*.2,R*.12,a,false); }
+
+    if(reduce){ for(i=0;i<ops.length;i++) ops[i](); return; }
+    var k=0, per=Math.max(1,Math.ceil(ops.length/60));
+    (function step(){ if(my!==gen) return; for(var j=0;j<per&&k<ops.length;j++,k++) ops[k](); if(k<ops.length) raf=requestAnimationFrame(step); })();
+  }
+
+  draw();
+  var last=c.clientWidth, lastDpr=window.devicePixelRatio||1, t;
+  /* redessine seulement si la largeur (ou la densité de pixels) change : ignore les
+     redimensionnements en hauteur seule des barres d'adresse mobiles */
+  window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(function(){
+    var d=window.devicePixelRatio||1;
+    if(c.clientWidth!==last||d!==lastDpr){ last=c.clientWidth; lastDpr=d; reduce=true; draw(); }
+  },120); });
+})();
+</script>
+</body>
+</html>
