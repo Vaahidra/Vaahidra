@@ -89,7 +89,7 @@ body{
 .heure.or{color:#8A6420}
 .titre{font-family:var(--display); font-weight:400; font-size:clamp(25px,6vw,34px); line-height:1.2; text-wrap:balance}
 .sous{font-style:italic; font-weight:300; color:var(--encre2); font-size:clamp(17px,4.4vw,21px)}
-.danse{font-family:var(--script); font-size:clamp(44px,12vw,80px); line-height:1.05; margin-top:4px !important; padding-right:.1em}
+.danse{font-family:var(--script); font-size:clamp(44px,12vw,80px); line-height:1.05; margin-top:.32em !important; padding-right:.1em}
 .em{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-style:normal; font-weight:400}
 .ico{font-size:.9em; margin-left:.2em; vertical-align:-.04em}
 .eyebrow .ico{font-size:15px; letter-spacing:0; margin-left:0}
@@ -231,7 +231,7 @@ body{
           <li><span class="h">15h30</span><span class="m"><span class="em" aria-hidden="true">🧁</span>Pause gourmande</span></li>
           <li><span class="h">17h00</span><span class="m"><span class="em" aria-hidden="true">☕</span>Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises <i>— l’heure du café</i></span></li>
           <li><span class="h or">19h00</span><span class="m"><span class="em" aria-hidden="true">🎂</span>Pièce montée au coucher du soleil</span></li>
-          <li><span class="h" aria-hidden="true">—</span><span class="m"><span class="em" aria-hidden="true">💃</span>La danse&#8239;? À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></li>
+          <li><span class="h" aria-hidden="true">—</span><span class="m"><span class="em" aria-hidden="true">💃</span>La danse&#8239;? À toute <span class="nw">heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></span></li>
         </ul>
         <p class="actions">
           <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29%2C+Tala+Khaled%2C+Aokas&amp;ctz=Africa%2FAlgiers&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener"><span class="em" aria-hidden="true">🗓️</span> Ajouter à mon agenda</a>
@@ -279,6 +279,7 @@ body{
   }
   var cur=0, target=0, tweenRaf=0, S=scene(0);
   var soleil=document.getElementById('soleil');
+  var cielEl=document.querySelector('.ciel');
   var meta=document.querySelector('meta[name="theme-color"]');
   function apply(t){
     S=scene(t);
@@ -291,7 +292,8 @@ body{
        jusqu'à ce qu'il descende vers la mer (courbe continue, .60 à 19h00 inchangé) */
     var sy=S.sunY;
     if(window.innerWidth<900){ sy = S.sunY<=.37 ? .11+(S.sunY-.11)*(.01/.26) : (S.sunY<=.60 ? .12+(S.sunY-.37)*(.48/.23) : S.sunY); }
-    soleil.style.transform='translateY(calc('+(sy*100)+'vh - 50%)) scale('+S.scale.toFixed(3)+')';
+    var vph=(cielEl&&cielEl.clientHeight)||window.innerHeight;   /* même boîte que la mer et le dégradé du ciel */
+    soleil.style.transform='translateY(calc('+Math.round(sy*vph)+'px - 50%)) scale('+S.scale.toFixed(3)+')';
     root.style.setProperty('--carte-a', (.80+.10*S.star).toFixed(3));
     document.getElementById('fleur').style.filter='sepia('+(.35*S.refl).toFixed(3)+') brightness('+(1-.14*S.star).toFixed(3)+')';
     if(meta) meta.setAttribute('content', rgb(S.top));
@@ -410,7 +412,8 @@ body{
   sizeSea(); sizePetals(); lastW=W; lastH=H;
   for(var pi=0;pi<14;pi++) petals.push(newPetal(false));   /* semés une fois le canvas dimensionné */
   window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){
-    if(window.innerWidth!==lastW || Math.abs(window.innerHeight-lastH)>120){ lastW=window.innerWidth; lastH=window.innerHeight; resize(); apply(cur); drawFlower(true); fitHeight(); }
+    apply(cur);   /* replace le soleil même quand seule la barre d'adresse se replie */
+    if(window.innerWidth!==lastW || Math.abs(window.innerHeight-lastH)>120){ lastW=window.innerWidth; lastH=window.innerHeight; resize(); drawFlower(true); fitHeight(); }
   },120); });
 
   /* ---------------- la fleur : un gardénia qui éclot lentement ---------------- */
