@@ -2,350 +2,479 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wahid &amp; Délia</title>
-<meta name="description" content="Wahid & Délia ont la joie de vous inviter à célébrer leurs fiançailles — samedi 12 septembre 2026, Sunset Beach.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Italiana&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+<meta name="description" content="Wahid & Délia ont la joie de vous inviter à célébrer leurs fiançailles, samedi 12 septembre 2026 à Sunset Beach, plage privée.">
+<meta name="theme-color" content="#B9D7E8">
+<link href="https://fonts.googleapis.com/css2?family=Italiana&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   « Écume & lin » — version définitive (après jury)
-   Palette (8) :
-     lin        #F8F9F6  page, un blanc tirant très légèrement vers le verre de mer
-     écume      #EEF2EE  filets de la table des marées
-     sable      #E9E1CF  bande de sol, en bas — le rivage
-     horizon    #CDBFA1  l'unique filet chaud : la ligne d'horizon, le souligné
-                         du lien, le tiret de la danse
-     verre      #6F8580  réservé à l'esperluette et au trait de la fleur
-     encre-2    #4E6062  tout le second niveau de texte (≥ 4,5:1 sur lin et sable)
-     encre      #1B2726  texte, bleu-vert presque noir (jamais du noir pur)
-     or         #D9A64A  le soleil qui se couche sur l'horizon — dépensé deux fois
-     or-encre   #866420  … et l'heure de 19h00, « au coucher du soleil »
-   Typo : Italiana (titrage — haute contraste, une seule graisse, silhouette de
-   masthead) + Cormorant Garamond (texte, italiques pour l'invitation ; chiffres
-   alignés et tabulaires sur les heures).
-   Mise en page : un bloc unique, calé à gauche. Grand écran : grille 7/5 ; les
-   noms et l'invitation à gauche, la gardénia blanche à droite qui déborde du
-   bord ; une ligne d'horizon d'un pixel traverse la page avec un soleil à demi
-   couché ; sous elle, le rendez-vous à gauche et le programme à droite, lu
-   comme une table des marées. Mobile : une colonne, la fleur en tête décalée
-   d'un quart hors cadre, puis noms, invitation, horizon, rendez-vous, programme,
-   et le sable qui ferme la page.
-   Le risque : presque aucune couleur. Blanc sur blanc, un filet chaud, une
-   fleur blanche remplie posée sur la page, et un seul point d'or.
+   Wahid & Délia — invitation interactive « Une après-midi à Sunset Beach »
+   Chaque étape avance l'heure : le ciel, le soleil et la mer suivent.
+   Palette fixe :
+     encre    #1B2726  texte (bleu-vert presque noir)
+     encre-2  #4E6062  second niveau
+     verre    #6F8580  esperluette, trait de la fleur, filets
+     or       #D9A64A  le point de l'étape en cours, le soulignement
+     lin      #FAFAF7  la carte (verre dépoli)
+   Palette de scène : interpolée en JS entre 15h00 et le crépuscule
+   (ciel, soleil, mer, sable) — voir KEYS dans le script.
+   Type : Italiana (noms, heures) + Cormorant Garamond (texte, italiques).
    ============================================================ */
 :root{
-  --lin:#F8F9F6; --ecume:#EEF2EE; --sable:#E9E1CF; --horizon:#CDBFA1;
-  --verre:#6F8580; --encre-2:#4E6062; --encre:#1B2726;
-  --or:#D9A64A; --or-encre:#866420;
-  --display:"Italiana","Bodoni Moda","Didot","Bodoni 72","Times New Roman",serif;
-  --body:"Cormorant Garamond","Cormorant","EB Garamond","Garamond","Georgia","Times New Roman",serif;
+  --encre:#1B2726; --encre2:#4E6062; --verre:#6F8580; --or:#D9A64A; --lin:#FAFAF7;
+  --sky-top:#B9D7E8; --sky-mid:#DCEAF1; --sky-hz:#F4F1E8;
+  --sun:#FFF7DE; --sun-glow:rgba(255,247,222,.55);
+  --hz:60%;
+  --display:'Italiana','Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
+  --texte:'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
 }
 *{box-sizing:border-box}
-html{background:var(--lin);-webkit-text-size-adjust:100%; overflow-x:hidden; overflow-x:clip}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;background:#DCEAF1}
 body{
-  margin:0; background:var(--lin); color:var(--encre);
-  font-family:var(--body); font-size:20px; line-height:1.4;
-  font-feature-settings:"kern","liga";
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  overflow-x:hidden; overflow-x:clip;
+  min-height:100vh; min-height:100dvh;
+  color:var(--encre); font-family:var(--texte); font-size:18px; line-height:1.45;
+  -webkit-font-smoothing:antialiased; overflow-x:clip;
 }
-main{overflow-x:hidden; overflow-x:clip}
-a{color:inherit}
-a:focus-visible{outline:2px solid var(--encre); outline-offset:4px}
+/* ---------- la scène : calques fixes derrière tout ---------- */
+.ciel,.soleil,.mer,.fleur,.petales{position:fixed; pointer-events:none}
+.ciel{inset:0; z-index:0;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 40%,var(--sky-hz) var(--hz),var(--sky-hz) 100%);
+}
+.soleil{z-index:1; left:66%; top:0; width:clamp(64px,13vmin,120px); height:clamp(64px,13vmin,120px);
+  margin-left:calc(clamp(64px,13vmin,120px) / -2); border-radius:50%;
+  background:var(--sun); box-shadow:0 0 40px 12px var(--sun-glow),0 0 120px 40px var(--sun-glow);
+  transform:translateY(calc(var(--sun-y) - 50%));
+}
+@media (min-width:900px){ .soleil{left:77%} }
+.mer{inset:0; z-index:2; width:100%; height:100%}
+.fleur{z-index:3; top:-4vmin; right:-9vmin; width:clamp(190px,50vmin,340px); height:clamp(190px,50vmin,340px)}
+.petales{inset:0; z-index:4; width:100%; height:100%}
 
-/* ---- grille ---- */
-.page{
-  max-width:1160px; margin:0 auto;
-  padding:clamp(24px,5vw,64px) clamp(24px,6vw,72px) 0;
-}
-.grid{display:grid; grid-template-columns:minmax(0,1fr); row-gap:0}
-.col{min-width:0}
-.fleur{
-  display:block; width:clamp(168px,46vw,220px); aspect-ratio:1/1;
-  margin:-8px calc(-.24 * clamp(168px,46vw,220px)) 2px auto;   /* un quart de la fleur hors cadre */
-  justify-self:end;
-}
+/* ---------- la carte ---------- */
+.scene{position:relative; z-index:5; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; align-items:center;
+  padding:clamp(44px,17vh,180px) 16px 132px; cursor:default}
+.scene{transition:padding-top .5s ease}
+.scene.haut{padding-top:36px}
+@media (min-width:900px){ .scene{padding-top:max(8vh,44px)} .scene.haut{padding-top:max(8vh,44px)} }
+.carte{position:relative; width:min(560px,100%); background:rgba(250,250,247,.80);
+  -webkit-backdrop-filter:blur(18px) saturate(1.15); backdrop-filter:blur(18px) saturate(1.15);
+  border:1px solid rgba(255,255,255,.75); border-radius:6px;
+  box-shadow:0 30px 70px -34px rgba(27,39,38,.45), 0 1px 0 rgba(255,255,255,.6) inset;
+  padding:30px 26px 28px; overflow:hidden}
+@media (min-width:900px){ .carte{padding:44px 48px 40px} }
+.ecrans{position:relative; transition:height .5s cubic-bezier(.4,0,.2,1)}
+.etape{position:absolute; inset:0 0 auto 0; visibility:hidden; opacity:0; transform:translateY(10px);
+  transition:opacity .5s ease, transform .5s ease, visibility 0s linear .5s}
+.etape.on{visibility:visible; opacity:1; transform:none; transition-delay:0s}
+.etape > *{margin:0}
+.etape > * + *{margin-top:14px}
 
-/* ---- étiquettes ---- */
-.label{
-  font-family:var(--body); font-weight:500; font-size:12px; line-height:1;
-  letter-spacing:.34em; text-transform:uppercase; color:var(--encre-2);
-  margin:0 0 18px;
-}
-.label::before{
-  content:""; display:inline-block; width:26px; height:1px;
-  background:var(--encre-2); vertical-align:middle; margin-right:14px; margin-top:-2px;
-}
+.eyebrow{font-size:12px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--encre2); display:flex; align-items:center; gap:12px}
+.eyebrow::before{content:""; width:26px; height:1px; background:var(--verre); flex:none}
+.noms{font-family:var(--display); font-weight:400; font-size:clamp(58px,15vw,96px); line-height:.95; letter-spacing:-.01em; text-wrap:balance; margin-top:18px !important}
+.noms .et{font-family:var(--texte); font-style:italic; color:var(--verre); font-size:.72em; margin:0 .04em}
+.date{font-family:var(--display); font-size:clamp(24px,6.5vw,38px); line-height:1.1; letter-spacing:.01em; text-wrap:balance}
+.invite{font-style:italic; font-size:clamp(24px,5.6vw,32px); line-height:1.22; text-wrap:balance}
+.petit{color:var(--encre2); font-size:17px}
+.lieu{font-size:clamp(20px,4.8vw,24px); line-height:1.3}
+.lieu i{color:var(--encre2)}
+.filet{height:1px; background:linear-gradient(90deg,var(--verre),rgba(111,133,128,0)); margin-top:22px !important}
+.heure{font-family:var(--display); font-size:clamp(76px,20vw,120px); line-height:.9; letter-spacing:-.01em; margin-top:14px !important; font-variant-numeric:lining-nums tabular-nums}
+.heure.or{color:#8A6420}
+.titre{font-family:var(--texte); font-weight:500; font-size:clamp(28px,6.6vw,38px); line-height:1.15; text-wrap:balance}
+.sous{font-style:italic; color:var(--encre2); font-size:clamp(19px,4.6vw,23px)}
+.danse{font-family:var(--display); font-size:clamp(40px,10vw,64px); line-height:1.05; margin-top:10px !important}
+.danse .em{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:.8em; vertical-align:-.04em}
 
-/* ---- masthead ---- */
-.masthead{margin-top:6px}
-.names{
-  font-family:var(--display); font-weight:400; margin:0;
-  font-size:clamp(78px,24.5vw,204px); line-height:.9; letter-spacing:-.005em;
-  display:grid; row-gap:0;
-}
-.names .w{display:block}
-.names .d{display:block; padding-left:.22em; white-space:nowrap; word-spacing:-.21em}  /* l'espace réel (copie/lecteur d'écran) resserré à la valeur du filet visuel */
-.names .amp{
-  font-family:var(--body); font-style:italic; font-weight:400;
-  font-size:.62em; line-height:1; color:var(--verre);
-  position:relative; top:-.08em;
-}
-.invite{
-  font-style:italic; font-weight:400;
-  font-size:clamp(25px,6.4vw,38px); line-height:1.18;
-  max-width:16em; margin:26px 0 0;
-}
+.recap{list-style:none; padding:0; margin-top:20px !important; border-top:1px solid rgba(111,133,128,.35)}
+.recap li{display:grid; grid-template-columns:64px 1fr; gap:14px; padding:9px 0; border-bottom:1px solid rgba(111,133,128,.22); align-items:baseline}
+.recap .h{font-family:var(--display); font-size:22px; font-variant-numeric:lining-nums tabular-nums; color:var(--encre)}
+.recap .h.or{color:#8A6420}
+.recap .m{font-size:18px; line-height:1.3}
+@media (max-width:400px){ .recap li{grid-template-columns:56px 1fr; gap:10px; padding:7px 0} .recap .h{font-size:20px} .recap .m{font-size:17px} }
+.recap .m i{color:var(--encre2)}
 
-/* ---- l'horizon : un filet, un soleil à demi couché ---- */
-.horizon{
-  position:relative; height:1px; background:var(--horizon);
-  margin:clamp(36px,8vw,72px) 0 0;
-}
-.horizon .soleil{
-  position:absolute; bottom:0; right:9%;
-  width:30px; height:15px; border-radius:15px 15px 0 0;
-  background:var(--or);
-}
+.actions{display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin-top:26px !important}
+.btn{appearance:none; font:inherit; font-size:15px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  border:1px solid var(--encre); background:var(--encre); color:var(--lin); padding:14px 22px; border-radius:999px; cursor:pointer;
+  text-decoration:none; display:inline-flex; align-items:center; gap:10px; line-height:1; transition:transform .15s ease, background .2s, color .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent; color:var(--encre); border-color:rgba(27,39,38,.45)}
+.btn.ghost:hover{background:rgba(27,39,38,.06)}
+.lien{appearance:none; background:none; border:0; padding:0; font:inherit; font-size:17px; color:var(--encre2); cursor:pointer;
+  text-decoration:underline; text-decoration-color:var(--or); text-underline-offset:5px; text-decoration-thickness:1px}
+.lien:hover{color:var(--encre)}
+.indice{color:var(--encre2); font-size:15px; font-style:italic}
+:focus-visible{outline:2px solid var(--or); outline-offset:3px; border-radius:4px}
+.btn:focus-visible{outline-offset:4px; border-radius:999px}
 
-/* ---- rendez-vous ---- */
-.when{margin-top:clamp(32px,7vw,64px)}
-.date{
-  font-family:var(--display); font-weight:400; margin:0;
-  font-size:clamp(34px,8.6vw,58px); line-height:1.02; letter-spacing:.005em;
-}
-.lieu{margin:14px 0 0; font-size:clamp(21px,5.4vw,25px); line-height:1.3}
-.lieu i{font-style:italic; color:var(--encre-2)}
-.lieu .sep{color:var(--horizon)}
-.des{margin:6px 0 0; font-size:20px; color:var(--encre-2); font-variant-numeric:lining-nums tabular-nums}
-.agenda{
-  display:inline-block; margin-top:8px; padding:15px 0; line-height:1;
-  font-size:15px; letter-spacing:.12em; text-transform:uppercase; color:var(--encre-2);
-  text-decoration:underline; text-decoration-color:var(--horizon);
-  text-decoration-thickness:1px; text-underline-offset:6px;
-}
-.agenda:hover{color:var(--encre); text-decoration-color:var(--encre)}
+/* ---------- la navigation, posée sur le sable ---------- */
+.nav{position:fixed; left:0; right:0; bottom:0; z-index:6; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px max(16px,env(safe-area-inset-left)) max(18px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right));
+  transition:opacity .5s ease, transform .5s ease}
+.nav.cache{opacity:0; transform:translateY(12px); pointer-events:none}
+.nav .btn{padding:12px 18px; font-size:13px; background:rgba(250,250,247,.9); color:var(--encre); border-color:rgba(27,39,38,.3);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px)}
+.nav .btn.plein{background:var(--encre); color:var(--lin); border-color:var(--encre)}
+.nav .btn[disabled]{opacity:.35; cursor:default; transform:none}
+.points{list-style:none; display:flex; gap:9px; padding:8px 12px; margin:0; background:rgba(250,250,247,.55); border-radius:999px;
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px)}
+.points button{appearance:none; border:0; padding:0; width:10px; height:10px; border-radius:50%; background:rgba(27,39,38,.28); cursor:pointer;
+  transition:transform .3s ease, background .3s ease}
+.points button[aria-current="step"]{background:var(--or); transform:scale(1.4)}
+.points button:hover{background:var(--encre2)}
+@media (max-width:420px){ .points{gap:7px; padding:8px 10px} .points button{width:8px;height:8px} .nav .btn{padding:12px 14px; letter-spacing:.12em} }
 
-/* ---- table des marées ---- */
-.tide{margin-top:clamp(48px,9vw,64px)}
-.tide .label{margin-bottom:20px}
-.maree{
-  list-style:none; margin:0; padding:0 0 0 22px;
-  border-left:1px solid var(--encre-2); position:relative;
-}
-.maree li{
-  display:grid; grid-template-columns:max-content minmax(0,1fr); column-gap:16px; align-items:baseline;
-  padding:13px 0; position:relative;
-}
-.maree li::before{                    /* repère de marée sur le filet */
-  content:""; position:absolute; left:-22px; top:calc(50% + 1px); width:10px; height:1px;
-  background:var(--encre-2);
-}
-.maree li+li{border-top:1px solid var(--ecume)}
-.maree .t{
-  font-variant-numeric:lining-nums tabular-nums; letter-spacing:0; font-weight:500;
-  color:var(--encre-2); font-size:17px; white-space:nowrap; min-width:5ch;
-}
-.maree .m{font-size:clamp(20px,5.2vw,23px); line-height:1.3; min-width:0; overflow-wrap:anywhere}
-.maree .m small{display:block; font-size:16px; color:var(--encre-2); letter-spacing:.02em; margin-top:1px}
-.maree .couchant .t{color:var(--or-encre)}
-.maree .danse .m{font-style:italic}
-.maree .danse .clin{font-style:normal; font-size:.85em; line-height:1; margin-left:.35em}
-.maree .danse .t{color:var(--horizon)}
-.maree .danse::before{width:0}
-
-/* ---- sol de sable : le rivage ---- */
-.sol{
-  margin-top:clamp(64px,11vw,112px);
-  background:var(--sable);
-}
-.sol .in{
-  max-width:1160px; margin:0 auto; padding:26px clamp(24px,6vw,72px) 34px;
-  display:flex; flex-wrap:wrap; gap:10px 40px; align-items:baseline; justify-content:space-between;
-  font-size:16px; color:var(--encre-2);
-}
-.sol p{margin:0}
-.sol .theme b{font-weight:500; color:var(--encre)}
-.sol .sign{font-family:var(--display); font-size:20px; color:var(--encre); letter-spacing:.02em}
-
-/* ---- grand écran ---- */
-@media (min-width:940px){
-  .grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr); column-gap:48px; align-items:start}
-  .masthead{grid-column:1; grid-row:1; margin-top:36px}
-  .fleur{grid-column:2; grid-row:1; width:min(100%,460px); margin:0 -12% 0 auto; align-self:start}
-  .horizon{grid-column:1 / -1; grid-row:2; margin-top:clamp(40px,5vw,64px)}
-  .horizon .soleil{right:17%; width:36px; height:18px; border-radius:18px 18px 0 0}
-  .when{grid-column:1; grid-row:3; margin-top:clamp(56px,6vw,80px)}
-  .tide{grid-column:2; grid-row:3; margin-top:clamp(56px,6vw,80px)}
-  .tide .label{margin-bottom:26px}
-  .tide .maree{max-width:520px}
-  .names{font-size:clamp(150px,15.5vw,188px)}
-  .names .d{padding-left:.36em}
-  .invite{margin-top:38px}
-  .sol .in{padding-top:32px; padding-bottom:44px}
-}
-/* téléphones courts (≤ 700 px de haut) : noms, date et lieu tiennent dans le premier écran */
-@media (max-width:939px) and (max-height:700px){
-  .fleur{width:clamp(140px,36vw,168px); margin-top:-14px}
-  .invite{margin-top:20px}
-  .horizon{margin-top:28px}
-  .when{margin-top:26px}
-}
-@media (max-width:939px) and (max-height:600px){
-  .fleur{width:120px; margin-top:-18px}
-  .invite{margin-top:14px}
-  .horizon{margin-top:22px}
-  .when{margin-top:20px}
-}
 @media (prefers-reduced-motion:reduce){
-  .fleur{transition:none}
+  .etape,.nav,.ecrans,.btn,.points button,.scene{transition:none}
 }
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 </style>
 </head>
 <body>
-<main>
-  <div class="page">
-    <div class="grid">
-      <canvas class="fleur" id="fleur" aria-hidden="true" width="260" height="260"></canvas>
+<div class="ciel" aria-hidden="true"></div>
+<div class="soleil" id="soleil" aria-hidden="true"></div>
+<canvas class="mer" id="mer" aria-hidden="true"></canvas>
+<canvas class="fleur" id="fleur" aria-hidden="true"></canvas>
+<canvas class="petales" id="petales" aria-hidden="true"></canvas>
 
-      <header class="col masthead">
-        <p class="label">Fiançailles</p>
-        <h1 class="names" aria-label="Wahid et Délia">
-          <span class="w">Wahid</span>
-          <span class="d"><span class="amp">&amp;</span> Délia</span>
-        </h1>
-        <p class="invite">ont la joie de vous inviter à&nbsp;célébrer leurs&nbsp;fiançailles</p>
-      </header>
+<main class="scene" id="scene">
+  <div class="carte">
+    <div class="ecrans" id="ecrans" aria-live="polite">
 
-      <div class="horizon" role="presentation"><span class="soleil"></span></div>
-
-      <section class="col when" aria-labelledby="rv">
-        <h2 class="label" id="rv">Rendez-vous</h2>
-        <p class="date">Samedi 12&nbsp;septembre&nbsp;2026</p>
-        <p class="lieu">Sunset Beach&nbsp;<span class="sep">—</span> <i>plage privée</i></p>
-        <p class="des">dès 15h00</p>
-        <a class="agenda" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener">Ajouter à mon agenda</a>
+      <section class="etape on" data-t="0" data-nom="Ouverture">
+        <p class="eyebrow">Fiançailles</p>
+        <h1 class="noms" aria-label="Wahid et Délia">Wahid <span class="et" aria-hidden="true">&amp;</span> Délia</h1>
+        <p class="date">Samedi 12 septembre 2026</p>
+        <p class="actions"><button class="btn" type="button" data-go="next">Ouvrir l’invitation</button><span class="indice">ou touchez l’écran</span></p>
       </section>
 
-      <section class="col tide" aria-labelledby="prog">
-        <h2 class="label" id="prog">Programme</h2>
-        <ol class="maree">
-          <li><span class="t">15h00</span><span class="m">Accueil des invités<small>l’arrivée</small></span></li>
-          <li><span class="t">15h30</span><span class="m">Pause gourmande</span></li>
-          <li><span class="t">17h00</span><span class="m">Café &amp; mignardises<small>l’heure du café</small></span></li>
-          <li class="couchant"><span class="t">19h00</span><span class="m">Pièce montée au coucher du soleil</span></li>
-          <li class="danse"><span class="t">—</span><span class="m">La danse&#8239;? À toute heure&nbsp;<span class="clin">😉</span></span></li>
-        </ol>
+      <section class="etape" data-t="0.03" data-nom="L’invitation">
+        <p class="eyebrow">L’invitation</p>
+        <p class="petit">Wahid <span aria-hidden="true">&amp;</span><span class="sr">et</span> Délia</p>
+        <p class="invite">ont la joie de vous inviter à célébrer leurs fiançailles</p>
+        <div class="filet" role="presentation"></div>
+        <p class="date">Samedi 12 septembre 2026</p>
+        <p class="lieu">Sunset Beach&nbsp;— <i>plage privée</i></p>
+        <p class="petit">dès 15h00, les pieds dans le sable</p>
       </section>
+
+      <section class="etape" data-t="0.06" data-nom="15h00, Accueil des invités">
+        <p class="eyebrow">Au programme</p>
+        <p class="heure">15h00</p>
+        <h2 class="titre">Accueil des invités</h2>
+        <p class="sous">l’arrivée</p>
+      </section>
+
+      <section class="etape" data-t="0.22" data-nom="15h30, Pause gourmande">
+        <p class="eyebrow">Au programme</p>
+        <p class="heure">15h30</p>
+        <h2 class="titre">Pause gourmande</h2>
+        <p class="sous">les douceurs de l’après-midi</p>
+      </section>
+
+      <section class="etape" data-t="0.52" data-nom="17h00, Café et mignardises">
+        <p class="eyebrow">Au programme</p>
+        <p class="heure">17h00</p>
+        <h2 class="titre">Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises</h2>
+        <p class="sous">l’heure du café</p>
+      </section>
+
+      <section class="etape" data-t="0.86" data-nom="19h00, Pièce montée au coucher du soleil">
+        <p class="eyebrow">Au programme</p>
+        <p class="heure or">19h00</p>
+        <h2 class="titre">Pièce montée</h2>
+        <p class="sous">au coucher du soleil</p>
+      </section>
+
+      <section class="etape" data-t="1" data-nom="La danse, à toute heure">
+        <p class="eyebrow">Et la danse&nbsp;?</p>
+        <p class="danse">À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></p>
+        <p class="sous">de l’arrivée jusqu’aux étoiles</p>
+      </section>
+
+      <section class="etape" data-t="0.93" data-nom="Récapitulatif">
+        <p class="eyebrow">À très vite</p>
+        <p class="date">Samedi 12 septembre 2026</p>
+        <p class="lieu">Sunset Beach&nbsp;— <i>plage privée</i></p>
+        <ul class="recap">
+          <li><span class="h">15h00</span><span class="m">Accueil des invités <i>— l’arrivée</i></span></li>
+          <li><span class="h">15h30</span><span class="m">Pause gourmande</span></li>
+          <li><span class="h">17h00</span><span class="m">Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises <i>— l’heure du café</i></span></li>
+          <li><span class="h or">19h00</span><span class="m">Pièce montée au coucher du soleil</span></li>
+          <li><span class="h" aria-hidden="true">—</span><span class="m">La danse&#8239;? À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></li>
+        </ul>
+        <p class="actions">
+          <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener">Ajouter à mon agenda</a>
+          <button class="lien" type="button" data-go="0">Revoir l’invitation</button>
+        </p>
+      </section>
+
     </div>
   </div>
-
-  <footer class="sol">
-    <div class="in">
-      <p class="theme">Thème&nbsp;: <b>plage &amp; fleurs blanches</b></p>
-      <p class="sign">Wahid &amp; Délia</p>
-    </div>
-  </footer>
 </main>
+
+<nav class="nav cache" id="nav" aria-label="Étapes de l’invitation">
+  <button class="btn ghost" type="button" id="prev" data-go="prev">Précédent</button>
+  <ol class="points" id="points"></ol>
+  <button class="btn plein" type="button" id="next" data-go="next">Suivant</button>
+</nav>
 
 <script>
 (function(){
-  var c=document.getElementById('fleur'); if(!c||!c.getContext) return;
-  var ctx=c.getContext('2d');
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var gen=0, raf=0;   /* jeton de génération : un redessin annule l'animation en cours */
+  'use strict';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* ---------------- la scène : de 15h00 au crépuscule ----------------
+     t = 0 → plein après-midi ; .52 → l'heure du café ; .86 → le soleil touche
+     la mer ; 1 → juste après le coucher, premières étoiles. */
+  var KEYS = [
+    {t:0,   top:'#B9D7E8', mid:'#DCEAF1', hz:'#F4F1E8', sun:'#FFF7DE', glow:.55, sunY:.11, far:'#7FB0C3', near:'#A9CFDB', deep:'#5E93A8', smid:'#7FAABB', sand:'#EADFC6', wet:'#D6C4A4', star:0, refl:0},
+    {t:.52, top:'#B3CBDC', mid:'#EDD6BC', hz:'#F9E7CB', sun:'#FFE3A6', glow:.62, sunY:.37, far:'#7AA8B8', near:'#C1CFCC', deep:'#5A8A9E', smid:'#82A8B4', sand:'#E7D8BD', wet:'#D0BB99', star:0, refl:.4},
+    {t:.86, top:'#6E88A3', mid:'#E6A07A', hz:'#F8CE9B', sun:'#FFB057', glow:.85, sunY:.60, far:'#4E7187', near:'#C4A38C', deep:'#3E6277', smid:'#6A8797', sand:'#DAC49E', wet:'#B79977', star:0, refl:1},
+    {t:1,   top:'#243447', mid:'#5A6682', hz:'#D48E6A', sun:'#FF9650', glow:.7,  sunY:.665, far:'#2A4152', near:'#5F7183', deep:'#22394A', smid:'#3A5163', sand:'#B6A284', wet:'#8B7760', star:1, refl:.6}
+  ];
+  function hex(h){ return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
+  function mixc(a,b,u){ var A=hex(a),B=hex(b); return [Math.round(A[0]+(B[0]-A[0])*u), Math.round(A[1]+(B[1]-A[1])*u), Math.round(A[2]+(B[2]-A[2])*u)]; }
+  function rgb(c,alpha){ return alpha==null ? 'rgb('+c[0]+','+c[1]+','+c[2]+')' : 'rgba('+c[0]+','+c[1]+','+c[2]+','+alpha+')'; }
+  function scene(t){
+    t = Math.max(0, Math.min(1, t));
+    var i=0; while(i<KEYS.length-2 && t>KEYS[i+1].t) i++;
+    var a=KEYS[i], b=KEYS[i+1], u=(t-a.t)/(b.t-a.t); u=Math.max(0,Math.min(1,u));
+    var o={};
+    for(var k in a){ if(k==='t') continue;
+      o[k] = (typeof a[k]==='string') ? mixc(a[k],b[k],u) : a[k]+(b[k]-a[k])*u; }
+    return o;
+  }
+  var cur=0, target=0, tweenRaf=0, S=scene(0);
+  var soleil=document.getElementById('soleil');
+  var meta=document.querySelector('meta[name="theme-color"]');
+  function apply(t){
+    S=scene(t);
+    root.style.setProperty('--sky-top', rgb(S.top));
+    root.style.setProperty('--sky-mid', rgb(S.mid));
+    root.style.setProperty('--sky-hz', rgb(S.hz));
+    root.style.setProperty('--sun', rgb(S.sun));
+    root.style.setProperty('--sun-glow', rgb(S.sun, S.glow));
+    soleil.style.setProperty('--sun-y', (S.sunY*100)+'vh');
+    soleil.style.transform='translateY(calc('+(S.sunY*100)+'vh - 50%))';
+    if(meta) meta.setAttribute('content', rgb(S.top));
+  }
+  function goTime(t){
+    target=t;
+    if(reduce){ cur=t; apply(t); drawSea(); return; }
+    if(tweenRaf) cancelAnimationFrame(tweenRaf);
+    var from=cur, start=null, dur=1700;
+    (function frame(now){
+      if(start===null) start=now;
+      var u=Math.min(1,(now-start)/dur); u = u<.5 ? 2*u*u : -1+(4-2*u)*u; /* ease in-out */
+      cur=from+(t-from)*u; apply(cur);
+      if(u<1) tweenRaf=requestAnimationFrame(frame); else tweenRaf=0;
+    })(performance.now());
+  }
+
+  /* ---------------- la mer, le sable, les étoiles (canvas plein écran) ---------------- */
+  var mer=document.getElementById('mer'), mctx=mer.getContext('2d');
+  var W=0,H=0,DPR=1, grain=null, stars=[];
+  var seed=7; function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  for(var si=0;si<70;si++) stars.push({x:rnd(), y:rnd()*.5, r:.6+rnd()*1.1, p:rnd()*6.28});
+  function makeGrain(){
+    var g=document.createElement('canvas'); g.width=g.height=140; var gc=g.getContext('2d');
+    var img=gc.createImageData(140,140), d=img.data;
+    for(var i=0;i<d.length;i+=4){ var v=rnd(); d[i]=d[i+1]=d[i+2]= v<.5?40:255; d[i+3]= 22+Math.floor(rnd()*30); }
+    gc.putImageData(img,0,0); return mctx.createPattern(g,'repeat');
+  }
+  function sizeSea(){
+    W=window.innerWidth; H=window.innerHeight; DPR=Math.min(window.devicePixelRatio||1,2);
+    mer.width=Math.round(W*DPR); mer.height=Math.round(H*DPR); mctx.setTransform(DPR,0,0,DPR,0,0);
+    if(!grain) grain=makeGrain();
+  }
+  function drawSea(now){
+    now = (now||0)/1000;
+    var ctx=mctx, hz=H*.60, shore=H*.865, sc=H/844;
+    ctx.clearRect(0,0,W,H);
+    /* étoiles */
+    if(S.star>0.01){ ctx.save(); for(var i=0;i<stars.length;i++){ var st=stars[i], tw=.55+.45*Math.sin(now*1.3+st.p);
+      ctx.globalAlpha=S.star*tw*(st.y<.45? 1 : (1-(st.y-.45)/.05)); ctx.fillStyle='#FFFFFF'; ctx.beginPath(); ctx.arc(st.x*W, st.y*H, st.r, 0, 6.283); ctx.fill(); }
+      ctx.restore(); }
+    /* la mer : fond dégradé du lointain vers le rivage */
+    var g=ctx.createLinearGradient(0,hz,0,shore);
+    g.addColorStop(0, rgb(S.far)); g.addColorStop(.55, rgb(S.deep)); g.addColorStop(1, rgb(S.near));
+    ctx.fillStyle=g; ctx.fillRect(0,hz,W,shore-hz+20);
+    /* brume à l'horizon : la mer se fond dans le ciel */
+    var hg=ctx.createLinearGradient(0,hz,0,hz+18*sc); hg.addColorStop(0, rgb(S.hz,.85)); hg.addColorStop(1, rgb(S.hz,0));
+    ctx.fillStyle=hg; ctx.fillRect(0,hz,W,18*sc);
+    /* reflet du soleil */
+    if(S.refl>0.01){ var sx=W*(W>=900?.77:.66);
+      var rg=ctx.createRadialGradient(sx,hz+8*sc,0, sx,hz+8*sc, Math.max(W*.16,90));
+      rg.addColorStop(0, rgb(S.sun,.55*S.refl)); rg.addColorStop(1, rgb(S.sun,0));
+      ctx.save(); ctx.translate(sx,hz+40*sc); ctx.scale(1,2.6); ctx.translate(-sx,-(hz+40*sc));
+      ctx.fillStyle=rg; ctx.fillRect(0,hz,W,shore-hz); ctx.restore();
+      /* chatoiement : traits horizontaux qui suivent la houle */
+      ctx.save(); ctx.globalAlpha=.35*S.refl; ctx.strokeStyle=rgb(S.sun); ctx.lineWidth=1.2;
+      for(var yy=hz+6*sc; yy<shore-10*sc; yy+=7*sc){ var w=(W*.05+W*.08*((yy-hz)/(shore-hz)))*(0.6+0.4*Math.sin(now*1.7+yy*.11)); ctx.beginPath(); ctx.moveTo(sx-w+Math.sin(now+yy)*6, yy); ctx.lineTo(sx+w+Math.sin(now*1.3+yy)*6, yy); ctx.stroke(); }
+      ctx.restore(); }
+    /* trois vagues, de la plus lointaine à la plus proche */
+    for(var k=0;k<3;k++){
+      var base=hz+(shore-hz)*(.30+k*.24), amp=(3+k*3.5)*sc, len=90+k*40, sp=.55+k*.2;
+      ctx.beginPath(); ctx.moveTo(0,H);
+      for(var x=0;x<=W;x+=6){ var y=base+amp*Math.sin(x/len+now*sp+k*1.7)+amp*.55*Math.sin(x/27-now*.9+k); ctx.lineTo(x,y); }
+      ctx.lineTo(W,H); ctx.closePath();
+      var col = k===0 ? S.deep : (k===1 ? S.smid : S.near);
+      ctx.fillStyle=rgb(col, .9); ctx.fill();
+      /* écume : un filet blanc sur la crête */
+      ctx.save(); ctx.globalAlpha=.28+k*.22; ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=1+k*.4; ctx.beginPath();
+      for(var x2=0;x2<=W;x2+=6){ var y2=base+amp*Math.sin(x2/len+now*sp+k*1.7)+amp*.55*Math.sin(x2/27-now*.9+k); if(x2===0) ctx.moveTo(x2,y2-.6); else ctx.lineTo(x2,y2-.6); }
+      ctx.stroke(); ctx.restore();
+    }
+    /* le sable, avec la ligne de marée qui respire */
+    var tide=Math.sin(now*.45)*9*sc;
+    ctx.fillStyle=rgb(S.wet); ctx.beginPath(); ctx.moveTo(0,H);
+    for(var x3=0;x3<=W;x3+=6){ ctx.lineTo(x3, shore-26*sc+tide*.6+4*sc*Math.sin(x3/70+now*.35)); } ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=rgb(S.sand); ctx.beginPath(); ctx.moveTo(0,H);
+    for(var x4=0;x4<=W;x4+=6){ ctx.lineTo(x4, shore+tide+5*sc*Math.sin(x4/60+now*.4)+3*sc*Math.sin(x4/17-now*.6)); } ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
+    /* l'écume qui lèche le sable */
+    ctx.save(); ctx.strokeStyle='#FFFFFF'; ctx.globalAlpha=.75; ctx.lineWidth=2; ctx.beginPath();
+    for(var x5=0;x5<=W;x5+=6){ var y5=shore+tide+5*sc*Math.sin(x5/60+now*.4)+3*sc*Math.sin(x5/17-now*.6); if(x5===0) ctx.moveTo(x5,y5); else ctx.lineTo(x5,y5); }
+    ctx.stroke(); ctx.globalAlpha=.3; ctx.lineWidth=1; ctx.beginPath();
+    for(var x6=0;x6<=W;x6+=6){ var y6=shore+tide*.6-9*sc+4*sc*Math.sin(x6/50-now*.3); if(x6===0) ctx.moveTo(x6,y6); else ctx.lineTo(x6,y6); }
+    ctx.stroke(); ctx.restore();
+    /* le grain du sable */
+    if(grain){ ctx.save(); ctx.globalAlpha=.35; ctx.fillStyle=grain; ctx.fillRect(0,shore-30*sc,W,H-shore+30*sc); ctx.restore(); }
+  }
+  function mixArr(A,B,u){ return [Math.round(A[0]+(B[0]-A[0])*u), Math.round(A[1]+(B[1]-A[1])*u), Math.round(A[2]+(B[2]-A[2])*u)]; }
+
+  /* ---------------- les pétales blancs ---------------- */
+  var pc=document.getElementById('petales'), pctx=pc.getContext('2d'), petals=[];
+  function sizePetals(){ pc.width=Math.round(W*DPR); pc.height=Math.round(H*DPR); pctx.setTransform(DPR,0,0,DPR,0,0); }
+  function newPetal(top){ return {x:rnd()*W, y: top? -30 : rnd()*H, s:9+rnd()*10, a:rnd()*6.28, va:(rnd()-.5)*.02, vy:.25+rnd()*.35, ph:rnd()*6.28, sw:.4+rnd()*.5}; }
+  for(var pi=0;pi<14;pi++) petals.push(newPetal(false));
+  function drawPetals(now){
+    now=(now||0)/1000; pctx.clearRect(0,0,W,H);
+    for(var i=0;i<petals.length;i++){ var p=petals[i];
+      if(!reduce){ p.y+=p.vy; p.x+=Math.sin(now*p.sw+p.ph)*.35-.12; p.a+=p.va; if(p.y>H+30||p.x<-40){ petals[i]=newPetal(true); p=petals[i]; } }
+      pctx.save(); pctx.translate(p.x,p.y); pctx.rotate(p.a+Math.sin(now*.8+p.ph)*.4);
+      pctx.beginPath(); pctx.ellipse(0,0,p.s,p.s*.55,0,0,6.283);
+      pctx.fillStyle='rgba(255,255,255,.82)'; pctx.fill();
+      pctx.strokeStyle='rgba(111,133,128,.35)'; pctx.lineWidth=.8; pctx.stroke();
+      pctx.beginPath(); pctx.moveTo(-p.s*.7,0); pctx.quadraticCurveTo(0,p.s*.12,p.s*.7,0); pctx.strokeStyle='rgba(111,133,128,.22)'; pctx.stroke();
+      pctx.restore(); }
+  }
+
+  /* ---------------- boucle d'animation ---------------- */
+  var running=false, loopRaf=0;
+  function loop(now){ drawSea(now); drawPetals(now); if(running) loopRaf=requestAnimationFrame(loop); }
+  function start(){ if(reduce){ drawSea(0); drawPetals(0); return; } if(!running){ running=true; loopRaf=requestAnimationFrame(loop); } }
+  function stop(){ running=false; if(loopRaf) cancelAnimationFrame(loopRaf); loopRaf=0; }
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else start(); });
+  var lastW=0, lastH=0, rt;
+  function resize(){ sizeSea(); sizePetals(); if(reduce){ drawSea(0); drawPetals(0); } }
+  sizeSea(); sizePetals(); lastW=W; lastH=H;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){
+    if(window.innerWidth!==lastW || Math.abs(window.innerHeight-lastH)>120){ lastW=window.innerWidth; lastH=window.innerHeight; resize(); drawFlower(true); fitHeight(); }
+  },120); });
+
+  /* ---------------- la fleur : un gardénia qui éclot lentement ---------------- */
+  var fc=document.getElementById('fleur'), fctx=fc.getContext('2d'), fGen=0, fRaf=0;
   var VERRE='rgba(111,133,128,', BLANC='rgba(255,255,255,';
-
-  function draw(){
-    gen++; var my=gen; if(raf) cancelAnimationFrame(raf);
-    var size=c.clientWidth||260, dpr=Math.min(window.devicePixelRatio||1,3);
-    c.width=Math.round(size*dpr); c.height=Math.round(size*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,size,size);
-    ctx.lineJoin='round'; ctx.lineCap='round';
-
-    var s=11; function rnd(){ s=(s*9301+49297)%233280; return s/233280; }
+  function drawFlower(instant){
+    fGen++; var my=fGen; if(fRaf) cancelAnimationFrame(fRaf);
+    var size=fc.clientWidth||260, dpr=Math.min(window.devicePixelRatio||1,3);
+    fc.width=Math.round(size*dpr); fc.height=Math.round(size*dpr);
+    var ctx=fctx; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,size,size); ctx.lineJoin='round'; ctx.lineCap='round';
+    var s=11; function r(){ s=(s*9301+49297)%233280; return s/233280; }
     var ops=[];
-    /* une forme blanche remplie puis cernée : le remplissage cache ce qui est dessous,
-       d'où de vrais recouvrements entre pétales */
     function shape(alpha,w,fill,fn){ ops.push(function(){ ctx.save(); ctx.beginPath(); fn();
       if(fill){ ctx.fillStyle=BLANC+fill+')'; ctx.fill(); }
       ctx.strokeStyle=VERRE+alpha+')'; ctx.lineWidth=w; ctx.stroke(); ctx.restore(); }); }
     function line(alpha,w,fn){ shape(alpha,w,0,fn); }
-
-    /* pétale de gardénia : bout arrondi, flancs bombés, un bord replié sur demande */
     function petal(cx,cy,len,wid,a,curl){
-      shape(.72,1,.94,function(){
-        ctx.translate(cx,cy); ctx.rotate(a);
-        ctx.moveTo(0,0);
+      shape(.72,1,.95,function(){ ctx.translate(cx,cy); ctx.rotate(a); ctx.moveTo(0,0);
         ctx.bezierCurveTo(wid*.9,len*.18, wid*1.15,len*.72, wid*.34,len*.97);
         ctx.bezierCurveTo(wid*.14,len*1.05, -wid*.14,len*1.05, -wid*.34,len*.97);
-        ctx.bezierCurveTo(-wid*1.15,len*.72, -wid*.9,len*.18, 0,0);
-      });
-      /* la creuse du pétale : une courbe légère près du bout */
-      line(.22,.8,function(){
-        ctx.translate(cx,cy); ctx.rotate(a);
-        ctx.moveTo(-wid*.42,len*.66); ctx.quadraticCurveTo(0,len*.86, wid*.42,len*.66);
-      });
-      if(curl){ /* bord replié : une petite langue blanche rabattue sur le bout */
-        shape(.6,1,.96,function(){
-          ctx.translate(cx,cy); ctx.rotate(a);
-          ctx.moveTo(wid*.36,len*.62);
-          ctx.bezierCurveTo(wid*.9,len*.8, wid*.5,len*1.08, -wid*.05,len*.9);
-          ctx.quadraticCurveTo(wid*.3,len*.8, wid*.36,len*.62);
-        });
-      }
+        ctx.bezierCurveTo(-wid*1.15,len*.72, -wid*.9,len*.18, 0,0); });
+      line(.22,.8,function(){ ctx.translate(cx,cy); ctx.rotate(a); ctx.moveTo(-wid*.42,len*.66); ctx.quadraticCurveTo(0,len*.86, wid*.42,len*.66); });
+      if(curl){ shape(.6,1,.97,function(){ ctx.translate(cx,cy); ctx.rotate(a); ctx.moveTo(wid*.36,len*.62);
+        ctx.bezierCurveTo(wid*.9,len*.8, wid*.5,len*1.08, -wid*.05,len*.9); ctx.quadraticCurveTo(wid*.3,len*.8, wid*.36,len*.62); }); }
     }
-
-    var cx=size*.56, cy=size*.43, R=size*.33, i,a;
-
-    /* tige, rameau des boutons, feuilles — dessinés d'abord, la fleur les recouvre */
-    var sx=cx-R*.12, sy=cy+R*.5;
-    var n1x=sx-size*.05, n1y=size*.80;                  /* premier nœud : feuille + rameau */
-    var n2x=sx-size*.02, n2y=size*.93;                  /* second nœud : la tige s'arrête sur la feuille */
+    var cx=size*.56, cy=size*.43, R=size*.33, i, a;
+    var sx=cx-R*.12, sy=cy+R*.5, n1x=sx-size*.05, n1y=size*.80, n2x=sx-size*.02, n2y=size*.93;
     line(.6,1.1,function(){ ctx.moveTo(sx,sy); ctx.quadraticCurveTo(sx-size*.07,size*.70, n1x,n1y); ctx.quadraticCurveTo(n1x+size*.01,size*.87, n2x,n2y); });
-    /* rameau vers les boutons de jasmin, en haut à gauche, passant derrière la fleur */
     line(.5,1,function(){ ctx.moveTo(n1x,n1y); ctx.quadraticCurveTo(size*.14,size*.66, size*.17,size*.30); });
     line(.5,1,function(){ ctx.moveTo(size*.185,size*.42); ctx.quadraticCurveTo(size*.11,size*.36, size*.10,size*.24); });
     function leaf(lx,ly,len,wid,a){
-      shape(.6,1,.7,function(){ ctx.translate(lx,ly); ctx.rotate(a); ctx.moveTo(0,0);
-        ctx.bezierCurveTo(wid,len*.15, wid*1.1,len*.7, 0,len); ctx.bezierCurveTo(-wid*.5,len*.7, -wid*.4,len*.25, 0,0); });
+      shape(.6,1,.75,function(){ ctx.translate(lx,ly); ctx.rotate(a); ctx.moveTo(0,0); ctx.bezierCurveTo(wid,len*.15, wid*1.1,len*.7, 0,len); ctx.bezierCurveTo(-wid*.5,len*.7, -wid*.4,len*.25, 0,0); });
       line(.35,.8,function(){ ctx.translate(lx,ly); ctx.rotate(a); ctx.moveTo(0,len*.06); ctx.quadraticCurveTo(wid*.12,len*.5, 0,len*.92); });
     }
-    leaf(n1x,n1y,size*.27,size*.075,Math.PI*.62);       /* vers la gauche, en bas */
-    leaf(n2x,n2y,size*.22,size*.065,-Math.PI*.62);      /* vers la droite, ferme la tige */
-    /* boutons de jasmin : goutte blanche, calice en deux traits, sur le rameau */
+    leaf(n1x,n1y,size*.27,size*.075,Math.PI*.62); leaf(n2x,n2y,size*.22,size*.065,-Math.PI*.62);
     function bud(bx,by,l,w,a){
-      shape(.55,1,.94,function(){ ctx.translate(bx,by); ctx.rotate(a); ctx.moveTo(0,0); ctx.bezierCurveTo(w,l*.25, w*.75,l*.8, 0,l); ctx.bezierCurveTo(-w*.75,l*.8, -w,l*.25, 0,0); });
+      shape(.55,1,.95,function(){ ctx.translate(bx,by); ctx.rotate(a); ctx.moveTo(0,0); ctx.bezierCurveTo(w,l*.25, w*.75,l*.8, 0,l); ctx.bezierCurveTo(-w*.75,l*.8, -w,l*.25, 0,0); });
       line(.5,.9,function(){ ctx.translate(bx,by); ctx.rotate(a); ctx.moveTo(-w*.55,l*.22); ctx.lineTo(0,0); ctx.lineTo(w*.55,l*.22); });
     }
-    bud(size*.17,size*.30,size*.10,size*.032,Math.PI+.35);
-    bud(size*.10,size*.24,size*.085,size*.028,Math.PI+.75);
-
-    /* gardénia : trois couronnes de pétales arrondis, longueurs variées, une couronne
-       intérieure resserrée ; chaque couronne recouvre la précédente */
-    var curlAt=2;
-    for(i=0;i<8;i++){ a=i*Math.PI*2/8+(rnd()-.5)*.22; petal(cx,cy,R*(.86+rnd()*.26),R*(.36+rnd()*.06),a,i===curlAt); }
-    for(i=0;i<6;i++){ a=i*Math.PI*2/6+Math.PI/6+(rnd()-.5)*.2; petal(cx,cy,R*(.62+rnd()*.1),R*.31,a,false); }
-    for(i=0;i<5;i++){ a=i*Math.PI*2/5+.5+(rnd()-.5)*.25; petal(cx,cy,R*(.38+rnd()*.06),R*.22,a,false); }
-    /* cœur : trois pétales à peine ouverts, roulés ensemble */
+    bud(size*.17,size*.30,size*.10,size*.032,Math.PI+.35); bud(size*.10,size*.24,size*.085,size*.028,Math.PI+.75);
+    for(i=0;i<8;i++){ a=i*Math.PI*2/8+(r()-.5)*.22; petal(cx,cy,R*(.86+r()*.26),R*(.36+r()*.06),a,i===2); }
+    for(i=0;i<6;i++){ a=i*Math.PI*2/6+Math.PI/6+(r()-.5)*.2; petal(cx,cy,R*(.62+r()*.1),R*.31,a,false); }
+    for(i=0;i<5;i++){ a=i*Math.PI*2/5+.5+(r()-.5)*.25; petal(cx,cy,R*(.38+r()*.06),R*.22,a,false); }
     for(i=0;i<3;i++){ a=i*Math.PI*2/3+1.1; petal(cx+Math.cos(a)*R*.03,cy+Math.sin(a)*R*.03,R*.2,R*.12,a,false); }
-
-    if(reduce){ for(i=0;i<ops.length;i++) ops[i](); return; }
-    var k=0, per=Math.max(1,Math.ceil(ops.length/60));
-    (function step(){ if(my!==gen) return; for(var j=0;j<per&&k<ops.length;j++,k++) ops[k](); if(k<ops.length) raf=requestAnimationFrame(step); })();
+    if(reduce||instant){ for(i=0;i<ops.length;i++) ops[i](); return; }
+    /* éclosion lente : ~6,5 s, plus vive au début puis qui s'attarde sur le cœur */
+    var k=0, t0=null, DUR=6500, DELAY=500;
+    (function step(now){ if(my!==fGen) return; if(t0===null) t0=now;
+      var u=Math.max(0,(now-t0-DELAY)/DUR); u=Math.min(1,u); u=1-Math.pow(1-u,1.6);
+      var upto=Math.floor(u*ops.length); while(k<upto){ ops[k](); k++; }
+      if(k<ops.length) fRaf=requestAnimationFrame(step); })(performance.now());
   }
 
-  draw();
-  var last=c.clientWidth, lastDpr=window.devicePixelRatio||1, t;
-  /* redessine seulement si la largeur (ou la densité de pixels) change : ignore les
-     redimensionnements en hauteur seule des barres d'adresse mobiles */
-  window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(function(){
-    var d=window.devicePixelRatio||1;
-    if(c.clientWidth!==last||d!==lastDpr){ last=c.clientWidth; lastDpr=d; reduce=true; draw(); }
-  },120); });
+  /* ---------------- le stepper ---------------- */
+  var etapes=Array.prototype.slice.call(document.querySelectorAll('.etape'));
+  var ecrans=document.getElementById('ecrans'), nav=document.getElementById('nav'), points=document.getElementById('points');
+  var prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
+  var idx=0, N=etapes.length;
+  etapes.forEach(function(e,i){ var li=document.createElement('li'); var b=document.createElement('button'); b.type='button';
+    b.setAttribute('aria-label','Étape '+(i+1)+' sur '+N+' : '+e.getAttribute('data-nom')); b.addEventListener('click',function(ev){ ev.stopPropagation(); go(i); });
+    li.appendChild(b); points.appendChild(li); });
+  var dots=Array.prototype.slice.call(points.querySelectorAll('button'));
+  function fitHeight(){ ecrans.style.height=etapes[idx].offsetHeight+'px'; }
+  function go(i){
+    if(i<0||i>=N) return;
+    var back=(i===0 && idx!==0); idx=i;
+    if(back) drawFlower(false);
+    etapes.forEach(function(e,j){ e.classList.toggle('on', j===i); e.setAttribute('aria-hidden', j===i?'false':'true'); });
+    dots.forEach(function(d,j){ if(j===i) d.setAttribute('aria-current','step'); else d.removeAttribute('aria-current'); });
+    fitHeight();
+    nav.classList.toggle('cache', i===0);
+    document.getElementById('scene').classList.toggle('haut', i===N-1);
+    prevBtn.disabled = (i<=1);
+    nextBtn.textContent = (i===N-1) ? 'Revoir' : 'Suivant';
+    goTime(parseFloat(etapes[i].getAttribute('data-t'))||0);
+    if(window.scrollY>0 && !reduce) window.scrollTo({top:0,behavior:'smooth'}); else if(window.scrollY>0) window.scrollTo(0,0);
+  }
+  function next(){ go(idx===N-1 ? 0 : idx+1); }
+  function prev(){ if(idx>0) go(idx-1); }
+  document.addEventListener('click', function(ev){
+    var t=ev.target.closest('[data-go]');
+    if(t){ ev.stopPropagation(); var g=t.getAttribute('data-go'); if(g==='next') next(); else if(g==='prev') prev(); else go(parseInt(g,10)); return; }
+    if(ev.target.closest('a,button,.nav')) return;
+    if(idx===0 || !ev.target.closest('.carte')) next();   /* sur la couverture, tout l'écran ouvre ; ensuite, la scène avance */
+  });
+  document.addEventListener('keydown', function(ev){
+    if(ev.altKey||ev.ctrlKey||ev.metaKey) return;
+    if(ev.key==='ArrowRight'||ev.key==='PageDown'||(ev.key===' '&&!ev.target.closest('a,button'))){ ev.preventDefault(); next(); }
+    else if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ ev.preventDefault(); prev(); }
+    else if(ev.key==='Home'){ go(0); } else if(ev.key==='End'){ go(N-1); }
+  });
+  var tx=null, ty=null;
+  document.addEventListener('touchstart', function(ev){ var t=ev.changedTouches[0]; tx=t.clientX; ty=t.clientY; }, {passive:true});
+  document.addEventListener('touchend', function(ev){ if(tx===null) return; var t=ev.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty; tx=ty=null;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){ if(dx<0) next(); else prev(); } }, {passive:true});
+
+  /* ---------------- départ ---------------- */
+  apply(0); fitHeight(); go(0); start(); drawFlower(false);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeight);
+  window.addEventListener('load', fitHeight);
 })();
 </script>
 </body>
