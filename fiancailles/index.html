@@ -6,35 +6,36 @@
 <title>Wahid &amp; Délia</title>
 <meta name="description" content="Wahid & Délia ont la joie de vous inviter à célébrer leurs fiançailles, samedi 12 septembre 2026 à Sunset Beach, plage privée.">
 <meta name="theme-color" content="#B9D7E8">
-<link href="https://fonts.googleapis.com/css2?family=Italiana&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;family=Marcellus&amp;family=Jost:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    Wahid & Délia — invitation interactive « Une après-midi à Sunset Beach »
    Chaque étape avance l'heure : le ciel, le soleil et la mer suivent.
    Palette fixe :
      encre    #1B2726  texte (bleu-vert presque noir)
-     encre-2  #4E6062  second niveau
+     encre-2  #46585A  second niveau
      verre    #6F8580  esperluette, trait de la fleur, filets
      or       #D9A64A  le point de l'étape en cours, le soulignement
      lin      #FAFAF7  la carte (verre dépoli)
    Palette de scène : interpolée en JS entre 15h00 et le crépuscule
    (ciel, soleil, mer, sable) — voir KEYS dans le script.
-   Type : Italiana (noms, heures) + Cormorant Garamond (texte, italiques).
+   Type : Great Vibes (noms, la danse) + Marcellus (heures, dates, titres) + Jost (texte, libellés, boutons).
    ============================================================ */
 :root{
-  --encre:#1B2726; --encre2:#4E6062; --verre:#6F8580; --or:#D9A64A; --lin:#FAFAF7;
+  --encre:#1B2726; --encre2:#46585A; --verre:#6F8580; --or:#D9A64A; --lin:#FAFAF7;
   --sky-top:#B9D7E8; --sky-mid:#DCEAF1; --sky-hz:#F4F1E8;
   --sun:#FFF7DE; --sun-glow:rgba(255,247,222,.55);
-  --hz:60%;
-  --display:'Italiana','Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
-  --texte:'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif;
+  --hz:60%; --sun-y:11vh; --carte-a:.80;
+  --display:'Marcellus','Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --script:'Great Vibes','Brush Script MT','Segoe Script','Snell Roundhand',cursive;
+  --texte:'Jost','Futura','Avenir Next','Century Gothic','Helvetica Neue',Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 html,body{margin:0;background:#DCEAF1}
 body{
   min-height:100vh; min-height:100dvh;
-  color:var(--encre); font-family:var(--texte); font-size:18px; line-height:1.45;
+  color:var(--encre); font-family:var(--texte); font-size:17px; line-height:1.5; font-weight:400;
   -webkit-font-smoothing:antialiased; overflow-x:clip;
 }
 /* ---------- la scène : calques fixes derrière tout ---------- */
@@ -42,7 +43,7 @@ body{
 .ciel{inset:0; z-index:0;
   background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 40%,var(--sky-hz) var(--hz),var(--sky-hz) 100%);
 }
-.soleil{z-index:1; left:66%; top:0; width:clamp(64px,13vmin,120px); height:clamp(64px,13vmin,120px);
+.soleil{z-index:1; left:56%; top:0; width:clamp(64px,13vmin,120px); height:clamp(64px,13vmin,120px);
   margin-left:calc(clamp(64px,13vmin,120px) / -2); border-radius:50%;
   background:var(--sun); box-shadow:0 0 40px 12px var(--sun-glow),0 0 120px 40px var(--sun-glow);
   transform:translateY(calc(var(--sun-y) - 50%));
@@ -54,14 +55,15 @@ body{
 
 /* ---------- la carte ---------- */
 .scene{position:relative; z-index:5; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; align-items:center;
-  padding:clamp(44px,17vh,180px) 16px 132px; cursor:default}
+  padding:clamp(44px,17vh,180px) 16px 132px; cursor:pointer}
 .scene{transition:padding-top .5s ease}
 .scene.haut{padding-top:36px}
 @media (min-width:900px){ .scene{padding-top:max(8vh,44px)} .scene.haut{padding-top:max(8vh,44px)} }
-.carte{position:relative; width:min(560px,100%); background:rgba(250,250,247,.80);
+.carte{position:relative; width:min(560px,100%); cursor:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 45%), rgba(252,249,243,var(--carte-a,.80));
   -webkit-backdrop-filter:blur(18px) saturate(1.15); backdrop-filter:blur(18px) saturate(1.15);
   border:1px solid rgba(255,255,255,.75); border-radius:6px;
-  box-shadow:0 30px 70px -34px rgba(27,39,38,.45), 0 1px 0 rgba(255,255,255,.6) inset;
+  box-shadow:0 30px 70px -34px rgba(27,39,38,.45), 0 1px 0 rgba(255,255,255,.6) inset, 0 0 0 1px rgba(255,255,255,.12);
   padding:30px 26px 28px; overflow:hidden}
 @media (min-width:900px){ .carte{padding:44px 48px 40px} }
 .ecrans{position:relative; transition:height .5s cubic-bezier(.4,0,.2,1)}
@@ -71,50 +73,60 @@ body{
 .etape > *{margin:0}
 .etape > * + *{margin-top:14px}
 
-.eyebrow{font-size:12px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--encre2); display:flex; align-items:center; gap:12px}
+.eyebrow{font-size:11px; font-weight:500; letter-spacing:.3em; text-transform:uppercase; color:var(--encre2); display:flex; align-items:center; gap:12px}
 .eyebrow::before{content:""; width:26px; height:1px; background:var(--verre); flex:none}
-.noms{font-family:var(--display); font-weight:400; font-size:clamp(58px,15vw,96px); line-height:.95; letter-spacing:-.01em; text-wrap:balance; margin-top:18px !important}
-.noms .et{font-family:var(--texte); font-style:italic; color:var(--verre); font-size:.72em; margin:0 .04em}
-.date{font-family:var(--display); font-size:clamp(24px,6.5vw,38px); line-height:1.1; letter-spacing:.01em; text-wrap:balance}
-.invite{font-style:italic; font-size:clamp(24px,5.6vw,32px); line-height:1.22; text-wrap:balance}
-.petit{color:var(--encre2); font-size:17px}
-.lieu{font-size:clamp(20px,4.8vw,24px); line-height:1.3}
-.lieu i{color:var(--encre2)}
+.noms{font-family:var(--script); font-weight:400; font-size:clamp(64px,17vw,112px); line-height:1.02; letter-spacing:0; text-wrap:balance; margin-top:8px !important; padding-right:.12em}
+.noms .et{font-family:var(--script); font-style:normal; color:var(--verre); font-size:.82em; margin:0 .02em}
+.date{font-family:var(--display); font-size:clamp(19px,5vw,31px); line-height:1.2; letter-spacing:.02em; text-wrap:balance}
+.invite{font-family:var(--display); font-size:clamp(21px,5vw,27px); line-height:1.3; text-wrap:balance}
+.petit{color:var(--encre2); font-size:16px; font-weight:300}
+.qui{font-family:var(--script); font-size:clamp(38px,9.5vw,52px); line-height:1; letter-spacing:0; padding-right:.1em}
+.lieu{font-size:clamp(18px,4.6vw,21px); line-height:1.35}
+.lieu i{color:var(--encre2); font-weight:300}
 .filet{height:1px; background:linear-gradient(90deg,var(--verre),rgba(111,133,128,0)); margin-top:22px !important}
-.heure{font-family:var(--display); font-size:clamp(76px,20vw,120px); line-height:.9; letter-spacing:-.01em; margin-top:14px !important; font-variant-numeric:lining-nums tabular-nums}
+.heure{font-family:var(--display); font-size:clamp(60px,17vw,104px); line-height:.95; letter-spacing:0; margin-top:14px !important; font-variant-numeric:lining-nums tabular-nums}
 .heure.or{color:#8A6420}
-.titre{font-family:var(--texte); font-weight:500; font-size:clamp(28px,6.6vw,38px); line-height:1.15; text-wrap:balance}
-.sous{font-style:italic; color:var(--encre2); font-size:clamp(19px,4.6vw,23px)}
-.danse{font-family:var(--display); font-size:clamp(40px,10vw,64px); line-height:1.05; margin-top:10px !important}
-.danse .em{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:.8em; vertical-align:-.04em}
+.titre{font-family:var(--display); font-weight:400; font-size:clamp(25px,6vw,34px); line-height:1.2; text-wrap:balance}
+.sous{font-style:italic; font-weight:300; color:var(--encre2); font-size:clamp(17px,4.4vw,21px)}
+.danse{font-family:var(--script); font-size:clamp(44px,12vw,80px); line-height:1.05; margin-top:4px !important; padding-right:.1em}
+.em{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-style:normal; font-weight:400}
+.ico{font-size:.9em; margin-left:.2em; vertical-align:-.04em}
+.eyebrow .ico{font-size:15px; letter-spacing:0; margin-left:0}
+.recap .em{margin-right:.35em}
+.danse .em{font-size:.48em; vertical-align:.18em; margin-left:.12em}
+.nw{white-space:nowrap}
 
 .recap{list-style:none; padding:0; margin-top:20px !important; border-top:1px solid rgba(111,133,128,.35)}
 .recap li{display:grid; grid-template-columns:64px 1fr; gap:14px; padding:9px 0; border-bottom:1px solid rgba(111,133,128,.22); align-items:baseline}
-.recap .h{font-family:var(--display); font-size:22px; font-variant-numeric:lining-nums tabular-nums; color:var(--encre)}
+.recap .h{font-family:var(--display); font-weight:400; font-size:20px; font-variant-numeric:lining-nums tabular-nums; color:var(--encre)}
 .recap .h.or{color:#8A6420}
-.recap .m{font-size:18px; line-height:1.3}
-@media (max-width:400px){ .recap li{grid-template-columns:56px 1fr; gap:10px; padding:7px 0} .recap .h{font-size:20px} .recap .m{font-size:17px} }
-.recap .m i{color:var(--encre2)}
+.recap .m{font-size:17px; line-height:1.35}
+@media (max-width:400px){ .recap li{grid-template-columns:56px 1fr; gap:10px; padding:7px 0} .recap .h{font-size:20px} .recap .m{font-size:17px} .recap .m i{display:none} }
+.recap .m i{color:var(--encre2); font-weight:300}
 
 .actions{display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin-top:26px !important}
-.btn{appearance:none; font:inherit; font-size:15px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
-  border:1px solid var(--encre); background:var(--encre); color:var(--lin); padding:14px 22px; border-radius:999px; cursor:pointer;
+.btn{appearance:none; font:inherit; font-size:13px; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+  border:1px solid var(--encre); background:var(--encre); color:var(--lin); padding:14px 22px; border-radius:3px; cursor:pointer; white-space:nowrap;
   text-decoration:none; display:inline-flex; align-items:center; gap:10px; line-height:1; transition:transform .15s ease, background .2s, color .2s}
 .btn:hover{transform:translateY(-1px)}
+@media (max-width:400px){ .actions .btn{padding:14px 18px; letter-spacing:.12em; font-size:14px} }
 .btn.ghost{background:transparent; color:var(--encre); border-color:rgba(27,39,38,.45)}
 .btn.ghost:hover{background:rgba(27,39,38,.06)}
-.lien{appearance:none; background:none; border:0; padding:0; font:inherit; font-size:17px; color:var(--encre2); cursor:pointer;
+.lien{appearance:none; background:none; border:0; padding:0; font:inherit; font-size:16px; color:var(--encre2); cursor:pointer;
   text-decoration:underline; text-decoration-color:var(--or); text-underline-offset:5px; text-decoration-thickness:1px}
 .lien:hover{color:var(--encre)}
-.indice{color:var(--encre2); font-size:15px; font-style:italic}
+.indice{color:var(--encre2); font-size:14px; font-weight:300; font-style:italic}
+.indice .clic{display:none}
+@media (hover:hover) and (pointer:fine){ .indice .tap{display:none} .indice .clic{display:inline} }
 :focus-visible{outline:2px solid var(--or); outline-offset:3px; border-radius:4px}
-.btn:focus-visible{outline-offset:4px; border-radius:999px}
+.btn:focus-visible{outline-offset:4px; border-radius:3px}
 
 /* ---------- la navigation, posée sur le sable ---------- */
-.nav{position:fixed; left:0; right:0; bottom:0; z-index:6; display:flex; align-items:center; justify-content:space-between; gap:12px;
+.nav{position:fixed; left:max(0px,calc(50% - 700px)); right:max(0px,calc(50% - 700px)); bottom:0; z-index:6; display:flex; align-items:center; justify-content:space-between; gap:12px;
   padding:14px max(16px,env(safe-area-inset-left)) max(18px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right));
-  transition:opacity .5s ease, transform .5s ease}
-.nav.cache{opacity:0; transform:translateY(12px); pointer-events:none}
+  transition:opacity .5s ease, transform .5s ease, visibility 0s linear .5s}
+.nav:not(.cache){transition-delay:0s}
+.nav.cache{opacity:0; transform:translateY(12px); pointer-events:none; visibility:hidden}
 .nav .btn{padding:12px 18px; font-size:13px; background:rgba(250,250,247,.9); color:var(--encre); border-color:rgba(27,39,38,.3);
   -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px)}
 .nav .btn.plein{background:var(--encre); color:var(--lin); border-color:var(--encre)}
@@ -125,8 +137,19 @@ body{
   transition:transform .3s ease, background .3s ease}
 .points button[aria-current="step"]{background:var(--or); transform:scale(1.4)}
 .points button:hover{background:var(--encre2)}
-@media (max-width:420px){ .points{gap:7px; padding:8px 10px} .points button{width:8px;height:8px} .nav .btn{padding:12px 14px; letter-spacing:.12em} }
+.nav .btn,.points{flex:none}
+@media (max-width:470px){ .nav{gap:8px; padding-left:12px; padding-right:12px} .nav .btn{padding:12px 13px; font-size:12px; letter-spacing:.1em} .points{gap:6px; padding:8px 9px} .points button{width:8px;height:8px} }
 
+/* écrans bas (téléphone en paysage) : tout se resserre pour que la carte reste au-dessus de la barre */
+@media (max-height:520px){
+  .scene{padding-top:18px; padding-bottom:96px} .scene.haut{padding-top:18px}
+  .carte{padding:20px 28px 18px} .etape > * + *{margin-top:9px}
+  .noms{font-size:clamp(44px,14vh,96px); margin-top:10px !important}
+  .heure{font-size:clamp(56px,16vh,120px); margin-top:8px !important}
+  .invite{font-size:22px} .date{font-size:24px} .titre{font-size:28px} .filet{margin-top:12px !important}
+  .nav{padding:8px 16px 10px}
+  .soleil{left:88%}
+}
 @media (prefers-reduced-motion:reduce){
   .etape,.nav,.ecrans,.btn,.points button,.scene{transition:none}
 }
@@ -145,69 +168,69 @@ body{
     <div class="ecrans" id="ecrans" aria-live="polite">
 
       <section class="etape on" data-t="0" data-nom="Ouverture">
-        <p class="eyebrow">Fiançailles</p>
+        <p class="eyebrow">Fiançailles <span class="em ico" aria-hidden="true">💍</span></p>
         <h1 class="noms" aria-label="Wahid et Délia">Wahid <span class="et" aria-hidden="true">&amp;</span> Délia</h1>
         <p class="date">Samedi 12 septembre 2026</p>
-        <p class="actions"><button class="btn" type="button" data-go="next">Ouvrir l’invitation</button><span class="indice">ou touchez l’écran</span></p>
+        <p class="actions"><button class="btn" type="button" data-go="next"><span class="em" aria-hidden="true">✉️</span> Ouvrir l’invitation</button><span class="indice"><span class="tap">ou touchez l’écran</span><span class="clic">ou cliquez n’importe où</span></span></p>
       </section>
 
       <section class="etape" data-t="0.03" data-nom="L’invitation">
         <p class="eyebrow">L’invitation</p>
-        <p class="petit">Wahid <span aria-hidden="true">&amp;</span><span class="sr">et</span> Délia</p>
-        <p class="invite">ont la joie de vous inviter à célébrer leurs fiançailles</p>
+        <p class="qui">Wahid <span aria-hidden="true">&amp;</span><span class="sr">et</span> Délia</p>
+        <p class="invite">ont la joie de vous inviter à célébrer leurs fiançailles <span class="em ico" aria-hidden="true">🥂</span></p>
         <div class="filet" role="presentation"></div>
-        <p class="date">Samedi 12 septembre 2026</p>
-        <p class="lieu">Sunset Beach&nbsp;— <i>plage privée</i></p>
-        <p class="petit">dès 15h00, les pieds dans le sable</p>
+        <p class="date"><span class="em" aria-hidden="true">📅</span> Samedi 12 septembre 2026</p>
+        <p class="lieu"><span class="em" aria-hidden="true">📍</span> Sunset Beach&nbsp;— <i>plage privée</i></p>
+        <p class="petit">dès 15h00, les pieds dans le sable <span class="em" aria-hidden="true">🏖️</span></p>
       </section>
 
       <section class="etape" data-t="0.06" data-nom="15h00, Accueil des invités">
         <p class="eyebrow">Au programme</p>
         <p class="heure">15h00</p>
-        <h2 class="titre">Accueil des invités</h2>
+        <h2 class="titre">Accueil des invités <span class="em ico" aria-hidden="true">🌊</span></h2>
         <p class="sous">l’arrivée</p>
       </section>
 
       <section class="etape" data-t="0.22" data-nom="15h30, Pause gourmande">
         <p class="eyebrow">Au programme</p>
         <p class="heure">15h30</p>
-        <h2 class="titre">Pause gourmande</h2>
+        <h2 class="titre">Pause gourmande <span class="em ico" aria-hidden="true">🧁</span></h2>
         <p class="sous">les douceurs de l’après-midi</p>
       </section>
 
       <section class="etape" data-t="0.52" data-nom="17h00, Café et mignardises">
         <p class="eyebrow">Au programme</p>
         <p class="heure">17h00</p>
-        <h2 class="titre">Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises</h2>
+        <h2 class="titre">Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises <span class="em ico" aria-hidden="true">☕</span></h2>
         <p class="sous">l’heure du café</p>
       </section>
 
       <section class="etape" data-t="0.86" data-nom="19h00, Pièce montée au coucher du soleil">
         <p class="eyebrow">Au programme</p>
         <p class="heure or">19h00</p>
-        <h2 class="titre">Pièce montée</h2>
-        <p class="sous">au coucher du soleil</p>
+        <h2 class="titre">Pièce montée <span class="em ico" aria-hidden="true">🎂</span></h2>
+        <p class="sous">au coucher du soleil <span class="em" aria-hidden="true">🌅</span></p>
       </section>
 
       <section class="etape" data-t="1" data-nom="La danse, à toute heure">
-        <p class="eyebrow">Et la danse&nbsp;?</p>
-        <p class="danse">À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></p>
-        <p class="sous">de l’arrivée jusqu’aux étoiles</p>
+        <p class="eyebrow">Et la danse&#8239;?</p>
+        <p class="danse">À toute <span class="nw">heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></p>
+        <p class="sous">de l’arrivée jusqu’aux étoiles <span class="em" aria-hidden="true">💃🕺</span></p>
       </section>
 
       <section class="etape" data-t="0.93" data-nom="Récapitulatif">
-        <p class="eyebrow">À très vite</p>
-        <p class="date">Samedi 12 septembre 2026</p>
-        <p class="lieu">Sunset Beach&nbsp;— <i>plage privée</i></p>
+        <p class="eyebrow">À très vite <span class="em ico" aria-hidden="true">🤍</span></p>
+        <p class="date"><span class="em" aria-hidden="true">📅</span> Samedi 12 septembre 2026</p>
+        <p class="lieu"><span class="em" aria-hidden="true">📍</span> Sunset Beach&nbsp;— <i>plage privée</i></p>
         <ul class="recap">
-          <li><span class="h">15h00</span><span class="m">Accueil des invités <i>— l’arrivée</i></span></li>
-          <li><span class="h">15h30</span><span class="m">Pause gourmande</span></li>
-          <li><span class="h">17h00</span><span class="m">Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises <i>— l’heure du café</i></span></li>
-          <li><span class="h or">19h00</span><span class="m">Pièce montée au coucher du soleil</span></li>
-          <li><span class="h" aria-hidden="true">—</span><span class="m">La danse&#8239;? À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></li>
+          <li><span class="h">15h00</span><span class="m"><span class="em" aria-hidden="true">🌊</span>Accueil des invités <i>— l’arrivée</i></span></li>
+          <li><span class="h">15h30</span><span class="m"><span class="em" aria-hidden="true">🧁</span>Pause gourmande</span></li>
+          <li><span class="h">17h00</span><span class="m"><span class="em" aria-hidden="true">☕</span>Café <span aria-hidden="true">&amp;</span><span class="sr">et</span> mignardises <i>— l’heure du café</i></span></li>
+          <li><span class="h or">19h00</span><span class="m"><span class="em" aria-hidden="true">🎂</span>Pièce montée au coucher du soleil</span></li>
+          <li><span class="h" aria-hidden="true">—</span><span class="m"><span class="em" aria-hidden="true">💃</span>La danse&#8239;? À toute heure <span class="em" role="img" aria-label="clin d’œil">😉</span></span></li>
         </ul>
         <p class="actions">
-          <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener">Ajouter à mon agenda</a>
+          <a class="btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fian%C3%A7ailles+de+Wahid+%26+D%C3%A9lia&amp;dates=20260912T150000/20260912T230000&amp;location=Sunset+Beach+%28plage+priv%C3%A9e%29&amp;details=Accueil+15h00+%C2%B7+Pause+gourmande+15h30+%C2%B7+Caf%C3%A9+%26+mignardises+17h00+%C2%B7+Pi%C3%A8ce+mont%C3%A9e+au+coucher+du+soleil+19h00" target="_blank" rel="noopener"><span class="em" aria-hidden="true">🗓️</span> Ajouter à mon agenda</a>
           <button class="lien" type="button" data-go="0">Revoir l’invitation</button>
         </p>
       </section>
@@ -232,10 +255,10 @@ body{
      t = 0 → plein après-midi ; .52 → l'heure du café ; .86 → le soleil touche
      la mer ; 1 → juste après le coucher, premières étoiles. */
   var KEYS = [
-    {t:0,   top:'#B9D7E8', mid:'#DCEAF1', hz:'#F4F1E8', sun:'#FFF7DE', glow:.55, sunY:.11, far:'#7FB0C3', near:'#A9CFDB', deep:'#5E93A8', smid:'#7FAABB', sand:'#EADFC6', wet:'#D6C4A4', star:0, refl:0},
-    {t:.52, top:'#B3CBDC', mid:'#EDD6BC', hz:'#F9E7CB', sun:'#FFE3A6', glow:.62, sunY:.37, far:'#7AA8B8', near:'#C1CFCC', deep:'#5A8A9E', smid:'#82A8B4', sand:'#E7D8BD', wet:'#D0BB99', star:0, refl:.4},
-    {t:.86, top:'#6E88A3', mid:'#E6A07A', hz:'#F8CE9B', sun:'#FFB057', glow:.85, sunY:.60, far:'#4E7187', near:'#C4A38C', deep:'#3E6277', smid:'#6A8797', sand:'#DAC49E', wet:'#B79977', star:0, refl:1},
-    {t:1,   top:'#243447', mid:'#5A6682', hz:'#D48E6A', sun:'#FF9650', glow:.7,  sunY:.665, far:'#2A4152', near:'#5F7183', deep:'#22394A', smid:'#3A5163', sand:'#B6A284', wet:'#8B7760', star:1, refl:.6}
+    {t:0,   top:'#B9D7E8', mid:'#DCEAF1', hz:'#F4F1E8', sun:'#FFF7DE', glow:.55, sunY:.11, scale:1, far:'#7FB0C3', near:'#A9CFDB', deep:'#5E93A8', smid:'#7FAABB', sand:'#EADFC6', wet:'#D6C4A4', star:0, refl:0},
+    {t:.52, top:'#B3CBDC', mid:'#EDD6BC', hz:'#F9E7CB', sun:'#FFE3A6', glow:.62, sunY:.37, scale:1, far:'#7AA8B8', near:'#C1CFCC', deep:'#5A8A9E', smid:'#82A8B4', sand:'#E7D8BD', wet:'#D0BB99', star:0, refl:.4},
+    {t:.86, top:'#6E88A3', mid:'#E6A07A', hz:'#F6C48E', sun:'#FF9436', glow:.85, sunY:.60, scale:1.45, far:'#4E7187', near:'#8FA6AE', deep:'#3E6277', smid:'#6A8797', sand:'#DAC49E', wet:'#B79977', star:0, refl:1},
+    {t:1,   top:'#243447', mid:'#5A6682', hz:'#D48E6A', sun:'#FF9650', glow:.7,  sunY:.665, scale:1.3, far:'#2A4152', near:'#4F6274', deep:'#22394A', smid:'#3A5163', sand:'#B6A284', wet:'#8B7760', star:1, refl:.6}
   ];
   function hex(h){ return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
   function mixc(a,b,u){ var A=hex(a),B=hex(b); return [Math.round(A[0]+(B[0]-A[0])*u), Math.round(A[1]+(B[1]-A[1])*u), Math.round(A[2]+(B[2]-A[2])*u)]; }
@@ -259,12 +282,18 @@ body{
     root.style.setProperty('--sky-hz', rgb(S.hz));
     root.style.setProperty('--sun', rgb(S.sun));
     root.style.setProperty('--sun-glow', rgb(S.sun, S.glow));
-    soleil.style.setProperty('--sun-y', (S.sunY*100)+'vh');
-    soleil.style.transform='translateY(calc('+(S.sunY*100)+'vh - 50%))';
+    /* sur écran étroit la carte occupe toute la largeur : le soleil reste au-dessus d'elle
+       jusqu'à ce qu'il descende vers la mer (courbe continue, .60 à 19h00 inchangé) */
+    var sy=S.sunY;
+    if(window.innerWidth<900){ sy = S.sunY<=.37 ? .11+(S.sunY-.11)*(.01/.26) : (S.sunY<=.60 ? .12+(S.sunY-.37)*(.48/.23) : S.sunY); }
+    soleil.style.transform='translateY(calc('+(sy*100)+'vh - 50%)) scale('+S.scale.toFixed(3)+')';
+    root.style.setProperty('--carte-a', (.80+.10*S.star).toFixed(3));
+    document.getElementById('fleur').style.filter='sepia('+(.35*S.refl).toFixed(3)+') brightness('+(1-.14*S.star).toFixed(3)+')';
     if(meta) meta.setAttribute('content', rgb(S.top));
   }
   function goTime(t){
     target=t;
+    if(t===cur){ apply(t); return; }
     if(reduce){ cur=t; apply(t); drawSea(); return; }
     if(tweenRaf) cancelAnimationFrame(tweenRaf);
     var from=cur, start=null, dur=1700;
@@ -308,25 +337,27 @@ body{
     var hg=ctx.createLinearGradient(0,hz,0,hz+18*sc); hg.addColorStop(0, rgb(S.hz,.85)); hg.addColorStop(1, rgb(S.hz,0));
     ctx.fillStyle=hg; ctx.fillRect(0,hz,W,18*sc);
     /* reflet du soleil */
-    if(S.refl>0.01){ var sx=W*(W>=900?.77:.66);
+    if(S.refl>0.01){ var sx=W*(W>=900?.77:(H<=520&&W>H?.88:.56));
       var rg=ctx.createRadialGradient(sx,hz+8*sc,0, sx,hz+8*sc, Math.max(W*.16,90));
       rg.addColorStop(0, rgb(S.sun,.55*S.refl)); rg.addColorStop(1, rgb(S.sun,0));
       ctx.save(); ctx.translate(sx,hz+40*sc); ctx.scale(1,2.6); ctx.translate(-sx,-(hz+40*sc));
       ctx.fillStyle=rg; ctx.fillRect(0,hz,W,shore-hz); ctx.restore();
       /* chatoiement : traits horizontaux qui suivent la houle */
-      ctx.save(); ctx.globalAlpha=.35*S.refl; ctx.strokeStyle=rgb(S.sun); ctx.lineWidth=1.2;
-      for(var yy=hz+6*sc; yy<shore-10*sc; yy+=7*sc){ var w=(W*.05+W*.08*((yy-hz)/(shore-hz)))*(0.6+0.4*Math.sin(now*1.7+yy*.11)); ctx.beginPath(); ctx.moveTo(sx-w+Math.sin(now+yy)*6, yy); ctx.lineTo(sx+w+Math.sin(now*1.3+yy)*6, yy); ctx.stroke(); }
+      ctx.save(); ctx.strokeStyle=rgb(S.sun); ctx.lineWidth=1.2;
+      for(var yy=hz+6*sc; yy<shore-10*sc; yy+=7*sc){ var w=(W*.05+W*.08*((yy-hz)/(shore-hz)))*(0.6+0.4*Math.sin(now*1.7+yy*.11))*(.55+.45*Math.abs(Math.sin(yy*3.7)));
+        ctx.globalAlpha=.35*S.refl*(.4+.6*Math.abs(Math.sin(yy*1.3+now*.8))); ctx.beginPath(); ctx.moveTo(sx-w+Math.sin(now+yy)*6, yy); ctx.lineTo(sx+w+Math.sin(now*1.3+yy)*6, yy); ctx.stroke(); }
       ctx.restore(); }
     /* trois vagues, de la plus lointaine à la plus proche */
     for(var k=0;k<3;k++){
-      var base=hz+(shore-hz)*(.30+k*.24), amp=(3+k*3.5)*sc, len=90+k*40, sp=.55+k*.2;
+      var base=hz+(shore-hz)*(.30+k*.24), amp=(3+k*3.5)*sc*(W>900?1.7:1), len=90+k*40, sp=.55+k*.2;
       ctx.beginPath(); ctx.moveTo(0,H);
       for(var x=0;x<=W;x+=6){ var y=base+amp*Math.sin(x/len+now*sp+k*1.7)+amp*.55*Math.sin(x/27-now*.9+k); ctx.lineTo(x,y); }
       ctx.lineTo(W,H); ctx.closePath();
       var col = k===0 ? S.deep : (k===1 ? S.smid : S.near);
-      ctx.fillStyle=rgb(col, .9); ctx.fill();
-      /* écume : un filet blanc sur la crête */
-      ctx.save(); ctx.globalAlpha=.28+k*.22; ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=1+k*.4; ctx.beginPath();
+      var gb=ctx.createLinearGradient(0,base-amp,0,base+70*sc); gb.addColorStop(0, rgb(mixArr(col,[255,255,255],.16),.9)); gb.addColorStop(1, rgb(col,.9));
+      ctx.fillStyle=gb; ctx.fill();
+      /* écume : des traits blancs intermittents sur la crête */
+      ctx.save(); ctx.globalAlpha=.24+k*.2; ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=1.2+k*.6; ctx.setLineDash([38+k*18, 11+k*5, 14+k*6, 27+k*9, 22+k*8, 9+k*4]); ctx.lineDashOffset=-now*18*sp-k*37; ctx.beginPath();
       for(var x2=0;x2<=W;x2+=6){ var y2=base+amp*Math.sin(x2/len+now*sp+k*1.7)+amp*.55*Math.sin(x2/27-now*.9+k); if(x2===0) ctx.moveTo(x2,y2-.6); else ctx.lineTo(x2,y2-.6); }
       ctx.stroke(); ctx.restore();
     }
@@ -337,9 +368,9 @@ body{
     ctx.fillStyle=rgb(S.sand); ctx.beginPath(); ctx.moveTo(0,H);
     for(var x4=0;x4<=W;x4+=6){ ctx.lineTo(x4, shore+tide+5*sc*Math.sin(x4/60+now*.4)+3*sc*Math.sin(x4/17-now*.6)); } ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
     /* l'écume qui lèche le sable */
-    ctx.save(); ctx.strokeStyle='#FFFFFF'; ctx.globalAlpha=.75; ctx.lineWidth=2; ctx.beginPath();
+    ctx.save(); ctx.strokeStyle='#FFFFFF'; ctx.globalAlpha=.55; ctx.lineWidth=3; ctx.shadowColor='#FFFFFF'; ctx.shadowBlur=6*sc; ctx.beginPath();
     for(var x5=0;x5<=W;x5+=6){ var y5=shore+tide+5*sc*Math.sin(x5/60+now*.4)+3*sc*Math.sin(x5/17-now*.6); if(x5===0) ctx.moveTo(x5,y5); else ctx.lineTo(x5,y5); }
-    ctx.stroke(); ctx.globalAlpha=.3; ctx.lineWidth=1; ctx.beginPath();
+    ctx.stroke(); ctx.shadowBlur=0; ctx.globalAlpha=.18; ctx.lineWidth=1; ctx.beginPath();
     for(var x6=0;x6<=W;x6+=6){ var y6=shore+tide*.6-9*sc+4*sc*Math.sin(x6/50-now*.3); if(x6===0) ctx.moveTo(x6,y6); else ctx.lineTo(x6,y6); }
     ctx.stroke(); ctx.restore();
     /* le grain du sable */
@@ -351,16 +382,15 @@ body{
   var pc=document.getElementById('petales'), pctx=pc.getContext('2d'), petals=[];
   function sizePetals(){ pc.width=Math.round(W*DPR); pc.height=Math.round(H*DPR); pctx.setTransform(DPR,0,0,DPR,0,0); }
   function newPetal(top){ return {x:rnd()*W, y: top? -30 : rnd()*H, s:9+rnd()*10, a:rnd()*6.28, va:(rnd()-.5)*.02, vy:.25+rnd()*.35, ph:rnd()*6.28, sw:.4+rnd()*.5}; }
-  for(var pi=0;pi<14;pi++) petals.push(newPetal(false));
   function drawPetals(now){
     now=(now||0)/1000; pctx.clearRect(0,0,W,H);
     for(var i=0;i<petals.length;i++){ var p=petals[i];
       if(!reduce){ p.y+=p.vy; p.x+=Math.sin(now*p.sw+p.ph)*.35-.12; p.a+=p.va; if(p.y>H+30||p.x<-40){ petals[i]=newPetal(true); p=petals[i]; } }
       pctx.save(); pctx.translate(p.x,p.y); pctx.rotate(p.a+Math.sin(now*.8+p.ph)*.4);
-      pctx.beginPath(); pctx.ellipse(0,0,p.s,p.s*.55,0,0,6.283);
+      pctx.beginPath(); pctx.moveTo(-p.s,0); pctx.quadraticCurveTo(0,-p.s*.62,p.s,0); pctx.quadraticCurveTo(0,p.s*.62,-p.s,0); pctx.closePath();
       pctx.fillStyle='rgba(255,255,255,.82)'; pctx.fill();
-      pctx.strokeStyle='rgba(111,133,128,.35)'; pctx.lineWidth=.8; pctx.stroke();
-      pctx.beginPath(); pctx.moveTo(-p.s*.7,0); pctx.quadraticCurveTo(0,p.s*.12,p.s*.7,0); pctx.strokeStyle='rgba(111,133,128,.22)'; pctx.stroke();
+      pctx.strokeStyle='rgba(111,133,128,'+(.3-.18*S.star).toFixed(3)+')'; pctx.lineWidth=.8; pctx.stroke();
+      if(p.s>=13){ pctx.beginPath(); pctx.moveTo(-p.s*.7,0); pctx.quadraticCurveTo(0,p.s*.12,p.s*.7,0); pctx.strokeStyle='rgba(111,133,128,.22)'; pctx.stroke(); }
       pctx.restore(); }
   }
 
@@ -369,19 +399,20 @@ body{
   function loop(now){ drawSea(now); drawPetals(now); if(running) loopRaf=requestAnimationFrame(loop); }
   function start(){ if(reduce){ drawSea(0); drawPetals(0); return; } if(!running){ running=true; loopRaf=requestAnimationFrame(loop); } }
   function stop(){ running=false; if(loopRaf) cancelAnimationFrame(loopRaf); loopRaf=0; }
-  document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else start(); });
+  document.addEventListener('visibilitychange', function(){ if(document.hidden){ stop(); if(fRaf) drawFlower(true); /* onglet caché : l'éclosion en cours se termine d'un coup */ } else start(); });
   var lastW=0, lastH=0, rt;
   function resize(){ sizeSea(); sizePetals(); if(reduce){ drawSea(0); drawPetals(0); } }
   sizeSea(); sizePetals(); lastW=W; lastH=H;
+  for(var pi=0;pi<14;pi++) petals.push(newPetal(false));   /* semés une fois le canvas dimensionné */
   window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){
-    if(window.innerWidth!==lastW || Math.abs(window.innerHeight-lastH)>120){ lastW=window.innerWidth; lastH=window.innerHeight; resize(); drawFlower(true); fitHeight(); }
+    if(window.innerWidth!==lastW || Math.abs(window.innerHeight-lastH)>120){ lastW=window.innerWidth; lastH=window.innerHeight; resize(); apply(cur); drawFlower(true); fitHeight(); }
   },120); });
 
   /* ---------------- la fleur : un gardénia qui éclot lentement ---------------- */
   var fc=document.getElementById('fleur'), fctx=fc.getContext('2d'), fGen=0, fRaf=0;
   var VERRE='rgba(111,133,128,', BLANC='rgba(255,255,255,';
   function drawFlower(instant){
-    fGen++; var my=fGen; if(fRaf) cancelAnimationFrame(fRaf);
+    fGen++; var my=fGen; if(fRaf) cancelAnimationFrame(fRaf); fRaf=0;
     var size=fc.clientWidth||260, dpr=Math.min(window.devicePixelRatio||1,3);
     fc.width=Math.round(size*dpr); fc.height=Math.round(size*dpr);
     var ctx=fctx; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,size,size); ctx.lineJoin='round'; ctx.lineCap='round';
@@ -425,7 +456,7 @@ body{
     (function step(now){ if(my!==fGen) return; if(t0===null) t0=now;
       var u=Math.max(0,(now-t0-DELAY)/DUR); u=Math.min(1,u); u=1-Math.pow(1-u,1.6);
       var upto=Math.floor(u*ops.length); while(k<upto){ ops[k](); k++; }
-      if(k<ops.length) fRaf=requestAnimationFrame(step); })(performance.now());
+      if(k<ops.length) fRaf=requestAnimationFrame(step); else fRaf=0; })(performance.now());
   }
 
   /* ---------------- le stepper ---------------- */
@@ -446,6 +477,7 @@ body{
     dots.forEach(function(d,j){ if(j===i) d.setAttribute('aria-current','step'); else d.removeAttribute('aria-current'); });
     fitHeight();
     nav.classList.toggle('cache', i===0);
+    if(i===0 && nav.contains(document.activeElement)) etapes[0].querySelector('[data-go=next]').focus();   /* jamais de focus dans la barre masquée */
     document.getElementById('scene').classList.toggle('haut', i===N-1);
     prevBtn.disabled = (i<=1);
     nextBtn.textContent = (i===N-1) ? 'Revoir' : 'Suivant';
@@ -461,14 +493,15 @@ body{
     if(idx===0 || !ev.target.closest('.carte')) next();   /* sur la couverture, tout l'écran ouvre ; ensuite, la scène avance */
   });
   document.addEventListener('keydown', function(ev){
-    if(ev.altKey||ev.ctrlKey||ev.metaKey) return;
+    if(ev.altKey||ev.ctrlKey||ev.metaKey||ev.shiftKey||ev.repeat) return;
     if(ev.key==='ArrowRight'||ev.key==='PageDown'||(ev.key===' '&&!ev.target.closest('a,button'))){ ev.preventDefault(); next(); }
     else if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ ev.preventDefault(); prev(); }
     else if(ev.key==='Home'){ go(0); } else if(ev.key==='End'){ go(N-1); }
   });
   var tx=null, ty=null;
   document.addEventListener('touchstart', function(ev){ var t=ev.changedTouches[0]; tx=t.clientX; ty=t.clientY; }, {passive:true});
-  document.addEventListener('touchend', function(ev){ if(tx===null) return; var t=ev.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty; tx=ty=null;
+  document.addEventListener('touchcancel', function(){ tx=ty=null; }, {passive:true});
+  document.addEventListener('touchend', function(ev){ if(tx===null) return; if(ev.touches.length){ tx=ty=null; return; } var t=ev.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty; tx=ty=null;
     if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){ if(dx<0) next(); else prev(); } }, {passive:true});
 
   /* ---------------- départ ---------------- */
